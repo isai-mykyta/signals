@@ -26,7 +26,8 @@
   "scripts": {
     "start:dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
-    "start:prod": "tsc && node dist/server.js"
+    "start:prod": "tsc && node dist/server.js",
+    "test": "jest --verbose --silent"
   },
   "keywords": [],
   "author": "",

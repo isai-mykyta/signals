@@ -11,8 +11,9 @@
     "db:migrate:undo": "yarn workspace database migrate:undo",
     "db:migration:create": "yarn workspace database migration:create",
     "api:start:dev": "yarn workspace api-service start:dev",
-    "api:build": "yarn workspace api-service build",
     "api:start:prod": "yarn workspace api-service start:prod",
+    "api:build": "yarn workspace api-service build",
+    "api:test": "yarn workspace api-service test",
     "start-all:dev": "bash ./start-all.sh",
     "start-all:prod": "bash ./start-all.sh prod"
   },
