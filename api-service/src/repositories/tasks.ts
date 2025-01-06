@@ -1,8 +1,7 @@
 import { Op } from "sequelize";
 
-import { ApplicationError } from "../common";
 import { TaskModel } from "../models";
-import { CustomErrorType, SearchTasksOptions, Task } from "../types";
+import { SearchTasksOptions, Task } from "../types";
 import { Repository } from "./repository";
 
 export class TasksRepository extends Repository {
@@ -15,27 +14,17 @@ export class TasksRepository extends Repository {
     return task.dataValues;
   }
 
-  public async getTaskById(id: number): Promise<Task> {
+  public async getTaskById(id: number): Promise<Task | undefined> {
     const strategy = await TaskModel.findOne({ where: { id } });
-    
-    if (!strategy) {
-      throw new ApplicationError({
-        message: "Task is not found.",
-        type: CustomErrorType.NOT_FOUND
-      });
-    }
-    
-    return strategy.dataValues;
+    return strategy?.dataValues;
   }
 
   public async deleteTaskById(id: number): Promise<void> {
-    await this.getTaskById(id);
-    TaskModel.destroy({ where: { id } });
+    await TaskModel.destroy({ where: { id } });
   }
     
   public async updateTaskById(id: number, options: Partial<Task>): Promise<void> {
-    await this.getTaskById(id);
-    TaskModel.update({ options }, { where: { id } });
+    await TaskModel.update(options, { where: { id } });
   }
 
   public async searchTasks(options: SearchTasksOptions, order: "ASC" | "DESC" = "DESC"): Promise<Task[]> {

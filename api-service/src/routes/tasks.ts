@@ -2,7 +2,7 @@ import { Request, Response, Router } from "express";
 
 import { TasksController } from "../controllers";
 import { parseQueryParams, validateQueryParams, validateRequestBody } from "../middlewares";
-import { CreateTaskValidator, SearchTasksValidator, UpdateTaskValidator } from "../validators";
+import { CreateTaskValidator, SearchTasksValidator } from "../validators";
 
 const tasksRouter = Router();
 const tasksController = new TasksController();
@@ -25,10 +25,29 @@ tasksRouter.get(
   (req: Request, res: Response) => tasksController.getTaskById(req, res)
 );
 
-tasksRouter.put(
+tasksRouter.delete(
   "/:id",
-  validateRequestBody(UpdateTaskValidator),
-  (req: Request, res: Response) => tasksController.updateTaskById(req, res)
+  (req: Request, res: Response) => tasksController.deleteTaskById(req, res)
+);
+
+tasksRouter.post(
+  "/:id/log",
+  (req: Request, res: Response) => tasksController.logTaskSignal(req, res)
+);
+
+tasksRouter.post(
+  "/:id/run",
+  (req: Request, res: Response) => tasksController.runTaskById(req, res)
+);
+
+tasksRouter.post(
+  "/:id/complete",
+  (req: Request, res: Response) => tasksController.completeTaskById(req, res)
+);
+
+tasksRouter.post(
+  "/:id/stop",
+  (req: Request, res: Response) => tasksController.stopTaskById(req, res)
 );
 
 export { tasksRouter };

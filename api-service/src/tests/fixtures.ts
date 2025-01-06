@@ -4,6 +4,8 @@ import {
   Market, 
   Strategy, 
   StrategyRuleType,
+  Task,
+  TaskStatus,
   TaskType,
   TimeFrameUnit
 } from "../types";
@@ -44,4 +46,15 @@ export const mockStrategy = (id: number, name: string): Strategy => ({
   taskSchedule: {
     startAt: Date.now()
   }
+});
+
+export const mockTask = (id: number, strategyId: number): Task => ({
+  id,
+  strategyId,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  startedAt: new Date(),
+  endedAt: new Date(),
+  status: TaskStatus.RUNNING,
+  isActive: true
 });

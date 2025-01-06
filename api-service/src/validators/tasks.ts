@@ -1,4 +1,15 @@
-import { IsBoolean, IsDateString, IsEnum, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
+import { 
+  IsArray,
+  IsBoolean, 
+  IsDateString, 
+  IsEnum, 
+  IsIn, 
+  IsInt, 
+  IsNotEmpty, 
+  IsOptional, 
+  IsString, 
+  Min 
+} from "class-validator";
 
 import { TaskStatus } from "../types";
 
@@ -8,35 +19,15 @@ export class CreateTaskValidator {
   public strategyId: number;
 }
 
-export class UpdateTaskValidator {
-  @IsDateString()
-  @IsOptional()
-  public startedAt?: string;
-
-  @IsDateString()
-  @IsOptional()
-  public endedAt?: string;
-
-  @IsDateString()
-  @IsOptional()
-  public lastSignalAt?: string;
-
-  @IsEnum(TaskStatus, { each: true })
-  @IsOptional()
-  public status?: TaskStatus;
-
-  @IsBoolean()
-  @IsOptional()
-  public isActive?: boolean;
-}
-
 export class SearchTasksValidator {
   @IsInt({ each: true })
   @IsOptional()
+  @IsArray()
   public ids: number[];
 
   @IsInt({ each: true })
   @IsOptional()
+  @IsArray()
   public strategyIds?: number[];
 
   @IsDateString()
@@ -53,6 +44,7 @@ export class SearchTasksValidator {
 
   @IsEnum(TaskStatus, { each: true })
   @IsOptional()
+  @IsArray()
   public statuses?: TaskStatus[];
 
   @IsBoolean()

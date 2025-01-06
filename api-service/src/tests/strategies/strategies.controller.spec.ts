@@ -21,7 +21,7 @@ jest.mock("../../services", () => {
   };
 });
 
-describe(" StrategiesController", () => {
+describe("StrategiesController", () => {
   let controller: StrategiesController;
 
   const mockResponse = {
@@ -75,4 +75,3 @@ describe(" StrategiesController", () => {
     expect(deleteStrategyByIdMock).toHaveBeenCalledWith(params.id);
   });
 });
-

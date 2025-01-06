@@ -1,8 +1,7 @@
 import { Op } from "sequelize";
 
-import { ApplicationError } from "../common";
 import { StrategyModel } from "../models";
-import { CustomErrorType, SearchStrategiesOptions, Strategy } from "../types";
+import { SearchStrategiesOptions, Strategy } from "../types";
 import { Repository } from "./repository";
 
 export class StrategiesRepository extends Repository {

@@ -1,6 +1,5 @@
 module.exports = {
   preset: "ts-jest",
-  testEnvironment: "node",
   rootDir: "src",
   testRegex: ".*\\.spec\\.ts$",
   transform: {
@@ -10,9 +9,20 @@ module.exports = {
     "**/*.(t|j)s"
   ],
   coverageDirectory: "../coverage",
-  testEnvironment: "node",
   testTimeout: 30000,
   globalSetup: "./tests/globalSetup.ts",
   globalTeardown: "./tests/globalTeardown.ts",
-  maxWorkers: 1
+  maxWorkers: 1,
+  testEnvironment: "node",
+  coveragePathIgnorePatterns: [
+    "src/configs",
+    "src/dtos",
+    "src/middlewares",
+    "src/models",
+    "src/routes",
+    "src/types",
+    "src/validators",
+    "src/app.ts",
+    "src/server.ts",
+  ]
 };

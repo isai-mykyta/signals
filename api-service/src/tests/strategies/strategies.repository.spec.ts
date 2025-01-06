@@ -1,9 +1,8 @@
 import { Op } from "sequelize";
 
-import { ApplicationError } from "../../common";
 import { StrategyModel } from "../../models";
 import { StrategiesRepository } from "../../repositories";
-import { CustomErrorType, Strategy } from "../../types";
+import { Strategy } from "../../types";
 import { mockStrategy } from "../fixtures";
 
 jest.mock("../../models", () => ({

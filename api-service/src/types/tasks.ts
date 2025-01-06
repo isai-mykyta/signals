@@ -25,8 +25,8 @@ export interface SearchTasksOptions {
   lastSignalAtFrom?: string | Date;
   statuses?: TaskStatus[];
   isActive?: boolean;
-  from?: Date;
+  from?: Date | string;
   limit?: number;
   offset?: number;
-  to?: Date;
+  to?: Date | string;
 }

@@ -1,8 +1,7 @@
 import { Op } from "sequelize";
 
-import { ApplicationError } from "../common";
 import { MarketModel } from "../models";
-import { CustomErrorType, Market, SearchMarketsOptions } from "../types";
+import { Market, SearchMarketsOptions } from "../types";
 import { Repository } from "./repository";
 
 export class MarketsRepository extends Repository {
