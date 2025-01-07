@@ -69,7 +69,7 @@ describe("TasksRepository", () => {
   describe("searchTasks", () => {
     test("Should search tasks without any params.", async () => {
       const tasks = mockTasks(5);
-      (TaskModel.findAll as jest.Mock).mockResolvedValue(tasks.map((task) => ({ dataValues: tasks })));
+      (TaskModel.findAll as jest.Mock).mockResolvedValue(tasks.map((task) => ({ dataValues: task })));
       await repository.searchTasks({});
         
       expect(TaskModel.findAll).toHaveBeenCalledTimes(1);

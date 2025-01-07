@@ -1,6 +1,6 @@
 import { Dialect } from "sequelize";
 
-import { StrategyModel, MarketModel } from "../models";
+import { StrategyModel, MarketModel, TaskModel } from "../models";
 
 export const sequelizeConfig = {
   database: process.env.POSTGRES_DB,
@@ -9,5 +9,5 @@ export const sequelizeConfig = {
   host: process.env.POSTGRES_HOST,
   port: Number(process.env.POSTGRES_PORT) || 5432,
   dialect: "postgres" as Dialect,
-  models: [MarketModel, StrategyModel],
+  models: [MarketModel, StrategyModel, TaskModel],
 };

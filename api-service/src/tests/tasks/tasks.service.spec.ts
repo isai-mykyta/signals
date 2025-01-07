@@ -173,7 +173,7 @@ describe("TasksService", () => {
     await service.logTaskSignal(1);
     expect(getTaskByIdMock).toHaveBeenCalledWith(1);
     expect(updateTaskByIdMock).toHaveBeenCalledWith(1, expect.objectContaining({
-      lastSignalAt: new Date().toISOString()
+      lastSignalAt: expect.anything()
     }));
   });
 

@@ -42,6 +42,7 @@ export class TasksService {
     } else {
       taskData.status = TaskStatus.RUNNING;
       taskData.isActive = true;
+      taskData.startedAt = now.toISOString();
     }
 
     return await this.tasksRepository.createTask(taskData);
