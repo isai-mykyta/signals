@@ -46,10 +46,6 @@ module.exports = {
         allowNull: false,
         defaultValue: DataTypes.NOW,
       },
-      rulesMet: {
-        type: DataTypes.ARRAY(DataTypes.JSONB),
-        allowNull: false,
-      },
       actionsTriggered: {
         type: DataTypes.ARRAY(DataTypes.JSONB),
         allowNull: false,
