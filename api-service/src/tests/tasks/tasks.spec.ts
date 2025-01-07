@@ -266,7 +266,212 @@ describe("Tasks Integration Tests", () => {
           expect(response.status).toBe(404);
         });
     });
+  
+    test("Should log signal for task by id.", async () => {
+      const market = await request(application)
+        .post("/markets")
+        .send({ name: "Test market", url: "http://some-url.com" });
+      const strategy = await request(application)
+        .post("/strategies")
+        .send({ ...strategyPayload, marketId: market.body.id });
+      const task = await request(application)
+        .post("/tasks")
+        .send({ strategyId: strategy.body.id });
 
-    //////////////////////////////////
+      await request(application)
+        .post(`/tasks/${task.body.id}/log`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body.lastSignalAt).toBeDefined();
+        });
+    });
+  });
+
+  describe("Run task.", () => {
+    test("Should throw 404 if trying to run task that doesn't exist.", async () => {
+      await request(application)
+        .post(`/tasks/999/run`)
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+
+    test("Should run task by id.", async () => {
+      const market = await request(application)
+        .post("/markets")
+        .send({ name: "Test market", url: "http://some-url.com" });
+      const strategy = await request(application)
+        .post("/strategies")
+        .send({ ...strategyPayload, marketId: market.body.id });
+
+      strategyPayload.taskSchedule.endAt = undefined;
+      strategyPayload.taskSchedule.startAt = undefined;
+
+      const task = await request(application)
+        .post("/tasks")
+        .send({ strategyId: strategy.body.id });
+
+      await request(application)
+        .post(`/tasks/${task.body.id}/run`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body.startedAt).toBeDefined();
+          expect(response.body.status).toBe(TaskStatus.RUNNING);
+          expect(response.body.isActive).toBe(true);
+        });
+    });
+  });
+
+  describe("Complete task.", () => {
+    test("Should throw 404 if trying to complete task that doesn't exist.", async () => {
+      await request(application)
+        .post(`/tasks/999/complete`)
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+
+    test("Should complete task by id.", async () => {
+      const market = await request(application)
+        .post("/markets")
+        .send({ name: "Test market", url: "http://some-url.com" });
+      const strategy = await request(application)
+        .post("/strategies")
+        .send({ ...strategyPayload, marketId: market.body.id });
+
+      strategyPayload.marketId = market.body.id;
+      strategyPayload.taskSchedule.endAt = undefined;
+
+      const task = await request(application)
+        .post("/tasks")
+        .send({ strategyId: strategy.body.id });
+
+      await request(application)
+        .post(`/tasks/${task.body.id}/complete`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body.endedAt).toBeDefined();
+          expect(response.body.status).toBe(TaskStatus.COMPLETED);
+          expect(response.body.isActive).toBe(false);
+        });
+    });
+  });
+
+  describe("Stop task.", () => {
+    test("Should throw 404 if trying to stop task that doesn't exist.", async () => {
+      await request(application)
+        .post(`/tasks/999/stop`)
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+
+    test("Should stop task by id.", async () => {
+      const market = await request(application)
+        .post("/markets")
+        .send({ name: "Test market", url: "http://some-url.com" });
+      const strategy = await request(application)
+        .post("/strategies")
+        .send({ ...strategyPayload, marketId: market.body.id });
+
+      strategyPayload.marketId = market.body.id;
+      strategyPayload.taskSchedule.endAt = undefined;
+
+      const task = await request(application)
+        .post("/tasks")
+        .send({ strategyId: strategy.body.id });
+
+      await request(application)
+        .post(`/tasks/${task.body.id}/stop`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body.endedAt).toBeDefined();
+          expect(response.body.status).toBe(TaskStatus.STOPPED);
+          expect(response.body.isActive).toBe(false);
+        });
+    });
+  });
+
+  describe("Search tasks.", () => {
+    test("Should return tasks array.", async () => {
+      await request(application)
+        .get(`/tasks`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(Array.isArray(response.body)).toBe(true);
+        });
+    });
+
+    test("Should throw 400 if ids query param is invalid.", async () => {
+      await request(application)
+        .get(`/tasks?ids=1`)
+        .expect((response) => {
+          expect(response.status).toBe(400);
+        });
+    });
+
+    test("Should return tasks by ids query param.", async () => {
+      await request(application)
+        .get(`/tasks?ids=[1]`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(Array.isArray(response.body)).toBe(true);
+          response.body.forEach((task) => expect(task.id).toBe(1));
+        });
+    });
+
+    test("Should throw 400 if strategyIds query param is invalid.", async () => {
+      await request(application)
+        .get(`/tasks?strategyIds=1`)
+        .expect((response) => {
+          expect(response.status).toBe(400);
+        });
+    });
+
+    test("Should return tasks by strategyIds query param.", async () => {
+      await request(application)
+        .get(`/tasks?strategyIds=[1]`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(Array.isArray(response.body)).toBe(true);
+          response.body.forEach((task) => expect(task.strategyId).toBe(1));
+        });
+    });
+
+    test("Should throw 400 if statuses query param is invalid.", async () => {
+      await request(application)
+        .get(`/tasks?statuses=["invalidStatus"]`)
+        .expect((response) => {
+          expect(response.status).toBe(400);
+        });
+    });
+
+    test("Should return tasks by statuses query param.", async () => {
+      await request(application)
+        .get(`/tasks?statuses=["${TaskStatus.RUNNING}"]`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(Array.isArray(response.body)).toBe(true);
+          response.body.forEach((task) => expect(task.status).toBe(TaskStatus.RUNNING));
+        });
+    });
+
+    test("Should throw 400 if isActive query param is invalid.", async () => {
+      await request(application)
+        .get(`/tasks?isActive="invalidValue"`)
+        .expect((response) => {
+          expect(response.status).toBe(400);
+        });
+    });
+
+    test("Should return tasks by isActive query param.", async () => {
+      await request(application)
+        .get(`/tasks?isActive=true`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(Array.isArray(response.body)).toBe(true);
+          response.body.forEach((task) => expect(task.isActive).toBe(true));
+        });
+    });
   });
 });
