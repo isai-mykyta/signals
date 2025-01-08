@@ -6,6 +6,7 @@ import express from "express";
 import { errorHandler } from "./middlewares";
 import { 
   marketsRouter, 
+  signalsRouter, 
   strategiesRouter, 
   tasksRouter 
 } from "./routes";
@@ -28,6 +29,7 @@ app.use((err: SyntaxError & { status: number; type: string }, _: express.Request
 app.use("/markets", marketsRouter);
 app.use("/strategies", strategiesRouter);
 app.use("/tasks", tasksRouter);
+app.use("/signals", signalsRouter);
 app.use(errorHandler);
 
 export { app };
