@@ -2,6 +2,7 @@ import {
   ActionType,
   Comprasion,
   Market, 
+  Signal, 
   Strategy, 
   StrategyRuleType,
   Task,
@@ -57,4 +58,17 @@ export const mockTask = (id: number, strategyId: number): Task => ({
   endedAt: new Date(),
   status: TaskStatus.RUNNING,
   isActive: true
+});
+
+export const mockSignal = (id: number): Signal => ({
+  id,
+  strategyId: id,
+  taskId: id,
+  asset: "BTCUSDT",
+  marketId: id,
+  producedAt: new Date().toISOString(),
+  actionsTriggered: [],
+  metadata: {},
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 });
