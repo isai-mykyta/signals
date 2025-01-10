@@ -29,7 +29,7 @@ export const startTestContainer = async (): Promise<StartedTestContainer> => {
 export const runMigrations = async (sequelize: Sequelize): Promise<void> => {
   const migrator = new Umzug({
     migrations: {
-      glob: path.resolve(__dirname, "../../../database/migrations"),
+      glob: path.resolve(__dirname, "../migrations"),
     },
     storage: new SequelizeStorage({ sequelize }),
     context: sequelize.getQueryInterface(),
