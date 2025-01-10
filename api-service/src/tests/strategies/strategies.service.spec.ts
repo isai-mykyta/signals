@@ -103,4 +103,38 @@ describe("StrategiesService", () => {
       type: CustomErrorType.NOT_FOUND,
     }));
   });
+
+  test("Should activate strategy by id.", async () => {
+    getStrategyByIdMock.mockResolvedValue(mockStrategy(1, "Mock strategy"));
+    updateStrategyByIdMock.mockResolvedValue(undefined);
+    await service.activateStrategyById(1);
+    expect(getStrategyByIdMock).toHaveBeenCalledWith(1);
+    expect(updateStrategyByIdMock).toHaveBeenCalledTimes(1);
+    expect(updateStrategyByIdMock).toHaveBeenCalledWith(1, { isActive: true });
+  });
+
+  test("Should disable strategy by id.", async () => {
+    getStrategyByIdMock.mockResolvedValue(mockStrategy(1, "Mock strategy"));
+    updateStrategyByIdMock.mockResolvedValue(undefined);
+    await service.disableStrategyById(1);
+    expect(getStrategyByIdMock).toHaveBeenCalledWith(1);
+    expect(updateStrategyByIdMock).toHaveBeenCalledTimes(1);
+    expect(updateStrategyByIdMock).toHaveBeenCalledWith(1, { isActive: false });
+  });
+
+  test("Should throw an error if trying to activate strategy that doesn't exist.", async () => {
+    getStrategyByIdMock.mockResolvedValue(undefined);
+    await expect(service.activateStrategyById(999)).rejects.toThrow(ApplicationError);
+    await expect(service.activateStrategyById(999)).rejects.toMatchObject(expect.objectContaining({
+      type: CustomErrorType.NOT_FOUND,
+    }));
+  });
+  
+  test("Should throw an error if trying to disable strategy that doesn't exist.", async () => {
+    getStrategyByIdMock.mockResolvedValue(undefined);
+    await expect(service.disableStrategyById(999)).rejects.toThrow(ApplicationError);
+    await expect(service.disableStrategyById(999)).rejects.toMatchObject(expect.objectContaining({
+      type: CustomErrorType.NOT_FOUND,
+    }));
+  });
 });

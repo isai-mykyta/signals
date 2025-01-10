@@ -301,4 +301,54 @@ describe("Strategies Integration Tests", () => {
         });
     });
   });
+
+  describe("Activate strategy.", () => {
+    test("Should throw 404 if trying to activate strategy that doesn't exist.", async () => {
+      await request(application)
+        .post(`/strategies/999/activate`)
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+
+    test("Should activate strategy by id.", async () => {
+      const strategy = await request(application)
+        .post("/strategies")
+        .send({ ...strategyPayload, marketId: 1, isActive: false });
+
+      expect(strategy.body.isActive).toBe(false);
+
+      await request(application)
+        .post(`/strategies/${strategy.body.id}/activate`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body.isActive).toBe(true);
+        });
+    });
+  });
+
+  describe("Disable strategy.", () => {
+    test("Should throw 404 if trying to disable strategy that doesn't exist.", async () => {
+      await request(application)
+        .post(`/strategies/999/disable`)
+        .expect((response) => {
+          expect(response.status).toBe(404);
+        });
+    });
+
+    test("Should disable strategy by id.", async () => {
+      const strategy = await request(application)
+        .post("/strategies")
+        .send({ ...strategyPayload, marketId: 1, isActive: true });
+
+      expect(strategy.body.isActive).toBe(true);
+
+      await request(application)
+        .post(`/strategies/${strategy.body.id}/disable`)
+        .expect((response) => {
+          expect(response.status).toBe(200);
+          expect(response.body.isActive).toBe(false);
+        });
+    });
+  });
 });

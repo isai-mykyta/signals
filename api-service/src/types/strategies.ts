@@ -57,6 +57,7 @@ export interface Strategy {
   rules: StrategyRule[];
   actions: StrategyAction[];
   taskType: TaskType;
+  isActive: boolean;
   taskSchedule?: TaskSchedule;
 }
 
@@ -68,6 +69,7 @@ export interface SearchStrategiesOptions {
   offset?: number;
   to?: Date | string;
   marketIds?: number[];
+  isActive?: boolean;
   assets?: string[];
 }
 

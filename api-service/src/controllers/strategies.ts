@@ -25,4 +25,14 @@ export class StrategiesController {
     await this.strategiesService.deleteStrategyById(Number(req.params.id));
     res.status(204).send();
   }
+
+  public async activateStrategyById(req: Request, res: Response): Promise<void> {
+    const strategy = await this.strategiesService.activateStrategyById(Number(req.params.id));
+    res.status(200).send(new StrategiesDto(strategy));
+  }
+
+  public async disableStrategyById(req: Request, res: Response): Promise<void> {
+    const strategy = await this.strategiesService.disableStrategyById(Number(req.params.id));
+    res.status(200).send(new StrategiesDto(strategy));
+  }
 }

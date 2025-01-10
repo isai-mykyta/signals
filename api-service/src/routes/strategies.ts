@@ -17,6 +17,16 @@ strategiesRouter.post(
   (req: Request, res: Response) => strategiesController.createStrategy(req, res)
 );
 
+strategiesRouter.post(
+  "/:id/activate",
+  (req: Request, res: Response) => strategiesController.activateStrategyById(req, res)
+);
+
+strategiesRouter.post(
+  "/:id/disable",
+  (req: Request, res: Response) => strategiesController.disableStrategyById(req, res)
+);
+
 strategiesRouter.get(
   "/",
   parseQueryParams,

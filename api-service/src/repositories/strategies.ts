@@ -20,7 +20,7 @@ export class StrategiesRepository extends Repository {
   }
 
   public async searchStrategies(options: SearchStrategiesOptions, order: "ASC" | "DESC" = "DESC"): Promise<Strategy[]> {
-    const { ids, names, from, to, limit = 20, offset = 0, marketIds, assets  } = options;
+    const { ids, names, from, to, limit = 20, offset = 0, marketIds, assets, isActive  } = options;
     const where: Record<string, any> = {};
 
     if (from || to) {
@@ -41,6 +41,10 @@ export class StrategiesRepository extends Repository {
 
     if (assets && assets.length > 0) {
       where.assets = { [Op.contains]: assets };
+    }
+
+    if (isActive !== undefined) {
+      where.isActive = isActive;
     }
 
     const results = await StrategyModel.findAll({

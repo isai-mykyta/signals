@@ -7,6 +7,8 @@ const createStrategyMock = jest.fn();
 const getStrategyByIdMock = jest.fn();
 const searchStrategiesMock = jest.fn();
 const deleteStrategyByIdMock = jest.fn();
+const activateStrategyByIdMock = jest.fn();
+const disableStrategyByIdMock = jest.fn();
 
 jest.mock("../../services", () => {
   return {
@@ -16,6 +18,8 @@ jest.mock("../../services", () => {
         getStrategyById: getStrategyByIdMock,
         searchStrategies: searchStrategiesMock,
         deleteStrategyById: deleteStrategyByIdMock,
+        activateStrategyById: activateStrategyByIdMock,
+        disableStrategyById: disableStrategyByIdMock
       };
     }),
   };
@@ -73,5 +77,21 @@ describe("StrategiesController", () => {
     await controller.deleteStrategyById({ params } as unknown as Request, mockResponse as unknown as Response);
     expect(deleteStrategyByIdMock).toHaveBeenCalledTimes(1);
     expect(deleteStrategyByIdMock).toHaveBeenCalledWith(params.id);
+  });
+
+  test("Should active strategy by id.", async () => {
+    const params = { id: 1 };
+    activateStrategyByIdMock.mockResolvedValue(mockStrategy(1, "Mock strategy"));
+    await controller.activateStrategyById({ params } as unknown as Request, mockResponse as unknown as Response);
+    expect(activateStrategyByIdMock).toHaveBeenCalledTimes(1);
+    expect(activateStrategyByIdMock).toHaveBeenCalledWith(params.id);
+  });
+
+  test("Should disable strategy by id.", async () => {
+    const params = { id: 1 };
+    disableStrategyByIdMock.mockResolvedValue(mockStrategy(1, "Mock strategy"));
+    await controller.disableStrategyById({ params } as unknown as Request, mockResponse as unknown as Response);
+    expect(disableStrategyByIdMock).toHaveBeenCalledTimes(1);
+    expect(disableStrategyByIdMock).toHaveBeenCalledWith(params.id);
   });
 });

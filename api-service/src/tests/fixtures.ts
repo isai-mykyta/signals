@@ -26,6 +26,7 @@ export const mockStrategy = (id: number, name: string): Strategy => ({
   updatedAt: new Date,
   marketId: 1,
   assets: ["BTCUSDT"],
+  isActive: true,
   rules: [
     {
       type: StrategyRuleType.PERCENTAGE_CHANGE,

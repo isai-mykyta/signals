@@ -66,6 +66,13 @@ export class StrategyModel extends Model {
   public taskSchedule: TaskSchedule;
 
   @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+  public isActive: boolean;
+
+  @Column({
     type: DataType.DATE,
     allowNull: false,
     defaultValue: DataType.NOW,

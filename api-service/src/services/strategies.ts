@@ -45,4 +45,14 @@ export class StrategiesService {
     await this.getStrategyById(id);
     await this.strategiesRepository.updateStrategyById(id, options);
   }
+
+  public async activateStrategyById(id: number): Promise<Strategy> {
+    await this.updateStrategyById(id, { isActive: true });
+    return await this.getStrategyById(id);
+  }
+
+  public async disableStrategyById(id: number): Promise<Strategy> {
+    await this.updateStrategyById(id, { isActive: false });
+    return await this.getStrategyById(id);
+  }
 }
