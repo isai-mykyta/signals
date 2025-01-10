@@ -1,7 +1,9 @@
 {
   "name": "signals-service",
   "version": "0.0.1",
-  "workspaces": ["./*"],
+  "workspaces": [
+    "./*"
+  ],
   "private": true,
   "scripts": {
     "db:up": "yarn workspace database db:up",
@@ -14,11 +16,18 @@
     "api:start:prod": "yarn workspace api-service start:prod",
     "api:build": "yarn workspace api-service build",
     "api:test": "yarn workspace api-service test",
+    "engine:start:dev": "yarn workspace tasks-engine start:dev",
+    "engine:start:prod": "yarn workspace tasks-engine start:prod",
+    "engine:build": "yarn workspace tasks-engine build",
+    "engine:test": "yarn workspace tasks-engine test",
     "start-all:dev": "bash ./start-all.sh",
     "start-all:prod": "bash ./start-all.sh prod"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }

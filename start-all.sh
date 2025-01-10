@@ -30,9 +30,11 @@ echo "Running migrations..."
 yarn db:migrate
 
 if [ "$1" == "prod" ]; then
-  echo "Starting API-service in production mode..."
-  yarn api:start:prod
+  echo "Starting services in production mode..."
+  # Run both the API and ENGINE in parallel
+  yarn concurrently "yarn api:start:prod" "yarn engine:start:prod"
 else
-  echo "Starting API-service in dev/watch mode..."
-  yarn api:start:dev
+  echo "Starting services in dev/watch mode..."
+   # Run both the API and ENGINE in parallel
+  yarn concurrently "yarn api:start:dev" "yarn engine:start:dev"
 fi
