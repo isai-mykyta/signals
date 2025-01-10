@@ -24,5 +24,6 @@ module.exports = {
     "src/validators",
     "src/app.ts",
     "src/server.ts",
+    "src/migrations",
   ]
 };
