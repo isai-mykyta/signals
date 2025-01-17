@@ -2,14 +2,11 @@ import "express-async-errors";
 import "reflect-metadata";
 
 import express from "express";
+import * as swaggerUi from "swagger-ui-express";
 
 import { errorHandler } from "./middlewares";
-import { 
-  marketsRouter, 
-  signalsRouter, 
-  strategiesRouter, 
-  tasksRouter 
-} from "./routes";
+import { RegisterRoutes } from "./routes/routes";
+import * as swaggerSpec from "./spec/swagger.json";
 import { HttpStatusCode } from "./types";
 
 const app = express();
@@ -26,10 +23,10 @@ app.use((err: SyntaxError & { status: number; type: string }, _: express.Request
   }
 });
 
-app.use("/markets", marketsRouter);
-app.use("/strategies", strategiesRouter);
-app.use("/tasks", tasksRouter);
-app.use("/signals", signalsRouter);
+app.use("/spec", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+RegisterRoutes(app);
+
 app.use(errorHandler);
 
 export { app };

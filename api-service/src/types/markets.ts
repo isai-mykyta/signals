@@ -14,6 +14,7 @@ export interface SearchMarketsOptions {
   limit?: number;
   offset?: number;
   to?: Date | string;
+  order?: "ASC" | "DESC"
 }
 
 export interface SearchQuery {

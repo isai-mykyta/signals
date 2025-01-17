@@ -1,0 +1,2178 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"TaskStatus": {
+				"enum": [
+					"PENDING",
+					"RUNNING",
+					"COMPLETED",
+					"STOPPED"
+				],
+				"type": "string"
+			},
+			"TasksDto": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the task",
+						"example": 123
+					},
+					"strategyId": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the assosiated strategy",
+						"example": 123
+					},
+					"createdAt": {
+						"type": "string",
+						"description": "Task creation date in ISO format"
+					},
+					"updatedAt": {
+						"type": "string",
+						"description": "Last task update date in ISO format"
+					},
+					"startedAt": {
+						"type": "string",
+						"description": "Start task date in ISO format"
+					},
+					"endedAt": {
+						"type": "string",
+						"description": "Finish task date in ISO format"
+					},
+					"lastSignalAt": {
+						"type": "string",
+						"description": "Last task signal date in ISO format"
+					},
+					"status": {
+						"$ref": "#/components/schemas/TaskStatus",
+						"description": "Task status"
+					},
+					"isActive": {
+						"type": "boolean",
+						"description": "Is active indicator",
+						"example": true
+					}
+				},
+				"required": [
+					"id",
+					"strategyId",
+					"createdAt",
+					"updatedAt",
+					"status",
+					"isActive"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"HttpStatusCode": {
+				"enum": [
+					400,
+					500,
+					404
+				],
+				"type": "number"
+			},
+			"CustomErrorType": {
+				"enum": [
+					0,
+					1
+				],
+				"type": "number"
+			},
+			"Record_string.unknown_": {
+				"properties": {},
+				"additionalProperties": {},
+				"type": "object",
+				"description": "Construct a type with a set of properties K of type T"
+			},
+			"ApplicationError": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"message": {
+						"type": "string"
+					},
+					"stack": {
+						"type": "string"
+					},
+					"statusCode": {
+						"$ref": "#/components/schemas/HttpStatusCode"
+					},
+					"type": {
+						"$ref": "#/components/schemas/CustomErrorType"
+					},
+					"details": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Record_string.unknown_"
+							},
+							{
+								"type": "string"
+							},
+							{
+								"type": "number",
+								"format": "double"
+							},
+							{
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							{
+								"items": {
+									"type": "number",
+									"format": "double"
+								},
+								"type": "array"
+							}
+						]
+					}
+				},
+				"required": [
+					"name",
+					"message",
+					"type"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Pick_Task.strategyId_": {
+				"properties": {
+					"strategyId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"strategyId"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"SearchTasksOptions": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"strategyIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"startedAtFrom": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "string",
+								"format": "date-time"
+							}
+						]
+					},
+					"endedAtFrom": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "string",
+								"format": "date-time"
+							}
+						]
+					},
+					"lastSignalAtFrom": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "string",
+								"format": "date-time"
+							}
+						]
+					},
+					"statuses": {
+						"items": {
+							"$ref": "#/components/schemas/TaskStatus"
+						},
+						"type": "array"
+					},
+					"isActive": {
+						"type": "boolean"
+					},
+					"from": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double"
+					},
+					"to": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"order": {
+						"type": "string",
+						"enum": [
+							"ASC",
+							"DESC"
+						]
+					}
+				},
+				"type": "object",
+				"additionalProperties": true
+			},
+			"StrategyRuleType.PERCENTAGE_CHANGE": {
+				"enum": [
+					"PERCENTAGE_CHANGE"
+				],
+				"type": "string"
+			},
+			"Comprasion": {
+				"enum": [
+					"GREATER_THAN",
+					"LESS_THAN",
+					"EQUALS",
+					"NOT_EQUALS"
+				],
+				"type": "string"
+			},
+			"TimeFrameUnit": {
+				"enum": [
+					"SECONDS",
+					"MINUTES",
+					"HOURS",
+					"DAYS"
+				],
+				"type": "string"
+			},
+			"TimeFrame": {
+				"properties": {
+					"amount": {
+						"type": "number",
+						"format": "double"
+					},
+					"unit": {
+						"$ref": "#/components/schemas/TimeFrameUnit"
+					}
+				},
+				"required": [
+					"amount",
+					"unit"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"PricePercentageChangeRule": {
+				"properties": {
+					"type": {
+						"$ref": "#/components/schemas/StrategyRuleType.PERCENTAGE_CHANGE"
+					},
+					"comparison": {
+						"$ref": "#/components/schemas/Comprasion"
+					},
+					"value": {
+						"type": "number",
+						"format": "double"
+					},
+					"timeFrame": {
+						"$ref": "#/components/schemas/TimeFrame"
+					}
+				},
+				"required": [
+					"type",
+					"comparison",
+					"value",
+					"timeFrame"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"StrategyRule": {
+				"$ref": "#/components/schemas/PricePercentageChangeRule"
+			},
+			"ActionType.TELEGRAM_NOTIFICATION": {
+				"enum": [
+					"TELEGRAM_NOTIFICATION"
+				],
+				"type": "string"
+			},
+			"TelegramNotification": {
+				"properties": {
+					"type": {
+						"$ref": "#/components/schemas/ActionType.TELEGRAM_NOTIFICATION"
+					},
+					"payload": {}
+				},
+				"required": [
+					"type",
+					"payload"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"StrategyAction": {
+				"$ref": "#/components/schemas/TelegramNotification"
+			},
+			"TaskType": {
+				"enum": [
+					"ONE_TIME",
+					"CONTINUOUS"
+				],
+				"type": "string"
+			},
+			"TaskSchedule": {
+				"properties": {
+					"startAt": {
+						"type": "number",
+						"format": "double"
+					},
+					"endAt": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"type": "object",
+				"additionalProperties": true
+			},
+			"StrategiesDto": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the strategy",
+						"example": 123
+					},
+					"name": {
+						"type": "string",
+						"description": "Strategy name"
+					},
+					"createdAt": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						],
+						"description": "Strategy creation date in ISO format"
+					},
+					"updatedAt": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						],
+						"description": "Last strategy update date in ISO format"
+					},
+					"assets": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array",
+						"description": "Assets included into strategy"
+					},
+					"rules": {
+						"items": {
+							"$ref": "#/components/schemas/StrategyRule"
+						},
+						"type": "array",
+						"description": "Strategy rules"
+					},
+					"actions": {
+						"items": {
+							"$ref": "#/components/schemas/StrategyAction"
+						},
+						"type": "array",
+						"description": "Strategy actions"
+					},
+					"taskType": {
+						"$ref": "#/components/schemas/TaskType",
+						"description": "Assosiated task type"
+					},
+					"taskSchedule": {
+						"$ref": "#/components/schemas/TaskSchedule",
+						"description": "Schedule that defines when the assosiated task should start or end."
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"createdAt",
+					"updatedAt",
+					"assets",
+					"rules",
+					"actions",
+					"taskType",
+					"taskSchedule"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Pick_Strategy.Exclude_keyofStrategy.id-or-createdAt-or-updatedAt-or-isActive__": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"marketId": {
+						"type": "number",
+						"format": "double"
+					},
+					"assets": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"rules": {
+						"items": {
+							"$ref": "#/components/schemas/PricePercentageChangeRule"
+						},
+						"type": "array"
+					},
+					"actions": {
+						"items": {
+							"$ref": "#/components/schemas/TelegramNotification"
+						},
+						"type": "array"
+					},
+					"taskType": {
+						"$ref": "#/components/schemas/TaskType"
+					},
+					"taskSchedule": {
+						"$ref": "#/components/schemas/TaskSchedule"
+					}
+				},
+				"required": [
+					"name",
+					"marketId",
+					"assets",
+					"rules",
+					"actions",
+					"taskType"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"Omit_Strategy.id-or-createdAt-or-updatedAt-or-isActive_": {
+				"$ref": "#/components/schemas/Pick_Strategy.Exclude_keyofStrategy.id-or-createdAt-or-updatedAt-or-isActive__",
+				"description": "Construct a type with the properties of T except for those in type K."
+			},
+			"SearchStrategiesOptions": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"names": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"from": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double"
+					},
+					"to": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"marketIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"isActive": {
+						"type": "boolean"
+					},
+					"assets": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"order": {
+						"type": "string",
+						"enum": [
+							"ASC",
+							"DESC"
+						]
+					}
+				},
+				"type": "object",
+				"additionalProperties": true
+			},
+			"SignalsDto": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the signal",
+						"example": 123
+					},
+					"strategyId": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the assosiated strategy",
+						"example": 123
+					},
+					"taskId": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the assosiated task",
+						"example": 123
+					},
+					"asset": {
+						"type": "string",
+						"description": "Asset for which the signal was produced"
+					},
+					"marketId": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the assosiated market",
+						"example": 123
+					},
+					"producedAt": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "string",
+								"format": "date-time"
+							}
+						],
+						"nullable": true,
+						"description": "Signal producing date in ISO format"
+					},
+					"actionsTriggered": {
+						"items": {
+							"$ref": "#/components/schemas/StrategyAction"
+						},
+						"type": "array",
+						"nullable": true,
+						"description": "Actions triggered by signal"
+					},
+					"metadata": {
+						"description": "Any metadata"
+					},
+					"createdAt": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						],
+						"description": "Signal creation date in ISO format"
+					},
+					"updatedAt": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						],
+						"description": "Last signal update date in ISO format"
+					}
+				},
+				"required": [
+					"id",
+					"strategyId",
+					"taskId",
+					"asset",
+					"marketId",
+					"producedAt",
+					"actionsTriggered",
+					"metadata",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Pick_Signal.Exclude_keyofSignal.id-or-createdAt-or-updatedAt__": {
+				"properties": {
+					"strategyId": {
+						"type": "number",
+						"format": "double"
+					},
+					"marketId": {
+						"type": "number",
+						"format": "double"
+					},
+					"taskId": {
+						"type": "number",
+						"format": "double"
+					},
+					"asset": {
+						"type": "string"
+					},
+					"producedAt": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "string",
+								"format": "date-time"
+							}
+						]
+					},
+					"actionsTriggered": {
+						"items": {
+							"$ref": "#/components/schemas/TelegramNotification"
+						},
+						"type": "array"
+					},
+					"metadata": {}
+				},
+				"required": [
+					"strategyId",
+					"marketId",
+					"taskId",
+					"asset"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"Omit_Signal.id-or-createdAt-or-updatedAt_": {
+				"$ref": "#/components/schemas/Pick_Signal.Exclude_keyofSignal.id-or-createdAt-or-updatedAt__",
+				"description": "Construct a type with the properties of T except for those in type K."
+			},
+			"SearchSignalsOptions": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"strategyIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"taskIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"assets": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"marketIds": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"from": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double"
+					},
+					"to": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"order": {
+						"type": "string",
+						"enum": [
+							"ASC",
+							"DESC"
+						]
+					}
+				},
+				"type": "object",
+				"additionalProperties": true
+			},
+			"MarketResponseDto": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double",
+						"description": "Unique ID of the market",
+						"example": 123
+					},
+					"name": {
+						"type": "string",
+						"description": "Market name"
+					},
+					"url": {
+						"type": "string",
+						"description": "Market url"
+					},
+					"createdAt": {
+						"type": "string",
+						"description": "Market creation date in ISO format"
+					},
+					"updatedAt": {
+						"type": "string",
+						"description": "Last market update date in ISO format"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"url",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": true
+			},
+			"Pick_Market.name-or-url_": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"url"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"SearchMarketsOptions": {
+				"properties": {
+					"ids": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
+					},
+					"names": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"url": {
+						"type": "string"
+					},
+					"from": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"offset": {
+						"type": "number",
+						"format": "double"
+					},
+					"to": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "date-time"
+							},
+							{
+								"type": "string"
+							}
+						]
+					},
+					"order": {
+						"type": "string",
+						"enum": [
+							"ASC",
+							"DESC"
+						]
+					}
+				},
+				"type": "object",
+				"additionalProperties": true
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "api-service",
+		"version": "1.0.0",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/tasks": {
+			"post": {
+				"operationId": "CreateTask",
+				"responses": {
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TasksDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid strategy id",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new task",
+				"summary": "Returns created task",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Pick_Task.strategyId_"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "SearchTasks",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/TasksDto"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid payload",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get array of tasks",
+				"summary": "Returns tasks array filtered by query params",
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "ids",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "strategyIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "startedAtFrom",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "endedAtFrom",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "lastSignalAtFrom",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "statuses",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/components/schemas/TaskStatus"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "isActive",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"ASC",
+								"DESC"
+							]
+						}
+					}
+				]
+			}
+		},
+		"/tasks/{id}": {
+			"get": {
+				"operationId": "GetTaskById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TasksDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Task is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a task by id",
+				"summary": "Returns task by id",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteTaskById",
+				"responses": {
+					"204": {
+						"description": ""
+					},
+					"404": {
+						"description": "Task is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete task by id",
+				"summary": "Deletes task by it's id, returns empty response",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/tasks/{id}/log": {
+			"post": {
+				"operationId": "LogTaskSignal",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TasksDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Task is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Log signal for task by id",
+				"summary": "Returns updated task",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/tasks/{id}/run": {
+			"post": {
+				"operationId": "RunTaskById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TasksDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Task is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Run task by id",
+				"summary": "Returns started task",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/tasks/{id}/complete": {
+			"post": {
+				"operationId": "CompleteTaskById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TasksDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Task is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Complete task by id",
+				"summary": "Returns completed task",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/tasks/{id}/stop": {
+			"post": {
+				"operationId": "StopTaskById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TasksDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Task is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Stop task by id",
+				"summary": "Returns stopped task",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/strategies": {
+			"post": {
+				"operationId": "CreateStrategy",
+				"responses": {
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/StrategiesDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid market id",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new strategy",
+				"summary": "Returns created strategy",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Omit_Strategy.id-or-createdAt-or-updatedAt-or-isActive_"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "SearchStrategies",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/StrategiesDto"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid payload",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get array of strategies",
+				"summary": "Returns strategies array filtered by query params",
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "ids",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "names",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "marketIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "isActive",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"in": "query",
+						"name": "assets",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"ASC",
+								"DESC"
+							]
+						}
+					}
+				]
+			}
+		},
+		"/strategies/{id}": {
+			"get": {
+				"operationId": "GetStrategyById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/StrategiesDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Strategy is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a strategy by id",
+				"summary": "Returns strategy by id",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteStrategyById",
+				"responses": {
+					"204": {
+						"description": ""
+					},
+					"404": {
+						"description": "Strategy is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete strategy by id",
+				"summary": "Deletes strategy by it's id, returns empty response",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/strategies/{id}/activate": {
+			"post": {
+				"operationId": "ActivateStrategyById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/StrategiesDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Strategy is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Activate strategy by id",
+				"summary": "Returns activated strategy",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/strategies/{id}/disable": {
+			"post": {
+				"operationId": "DisableStrategyById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/StrategiesDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Strategy is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Disable strategy by id",
+				"summary": "Returns disabled strategy",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/signals": {
+			"post": {
+				"operationId": "CreateSignal",
+				"responses": {
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SignalsDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid market id",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new signal",
+				"summary": "Returns created signal",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Omit_Signal.id-or-createdAt-or-updatedAt_"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "SearchSignals",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/SignalsDto"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid payload",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get array of signals",
+				"summary": "Returns signals array filtered by query params",
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "ids",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "strategyIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "taskIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "assets",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "marketIds",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"ASC",
+								"DESC"
+							]
+						}
+					}
+				]
+			}
+		},
+		"/signals/{id}": {
+			"get": {
+				"operationId": "GetSignalById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SignalsDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Signal is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a signal by id",
+				"summary": "Returns signal by id",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteSignalById",
+				"responses": {
+					"204": {
+						"description": ""
+					},
+					"404": {
+						"description": "Signal is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete signal by id",
+				"summary": "Deletes signal by it's id, returns empty response",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/markets": {
+			"post": {
+				"operationId": "CreateMarket",
+				"responses": {
+					"201": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MarketResponseDto"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid payload",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new market",
+				"summary": "Returns created market",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Pick_Market.name-or-url_"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "SearchMarkets",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/MarketResponseDto"
+									},
+									"type": "array"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Invalid payload",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get array of markets",
+				"summary": "Returns markets array filtered by query params",
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "ids",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "number",
+								"format": "double"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "names",
+						"required": false,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					},
+					{
+						"in": "query",
+						"name": "url",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "from",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "offset",
+						"required": false,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "to",
+						"required": false,
+						"schema": {}
+					},
+					{
+						"in": "query",
+						"name": "order",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"ASC",
+								"DESC"
+							]
+						}
+					}
+				]
+			}
+		},
+		"/markets/{id}": {
+			"get": {
+				"operationId": "GetMarketById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MarketResponseDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Market is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a market by id",
+				"summary": "Returns market by id",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteMarketById",
+				"responses": {
+					"204": {
+						"description": ""
+					},
+					"404": {
+						"description": "Market is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Delete market by id",
+				"summary": "Deletes market by it's id, returns empty response",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateMarketById",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MarketResponseDto"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Market is not found.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ApplicationError"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update market by id",
+				"summary": "Returns updated market",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Pick_Market.name-or-url_"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

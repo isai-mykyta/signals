@@ -9,6 +9,7 @@
     "@types/pg": "^8.11.10",
     "@types/sequelize": "^4.28.20",
     "@types/supertest": "^6.0.2",
+    "@types/swagger-ui-express": "^4.1.7",
     "@types/validator": "^13.12.2",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^7.16.0",
@@ -26,7 +27,9 @@
   },
   "scripts": {
     "start:dev": "nodemon --exec ts-node src/server.ts",
-    "build": "tsc",
+    "tsoa:spec": "tsoa spec",
+    "tsoa:routes": "tsoa routes",
+    "build": "yarn tsoa:spec && yarn run tsoa:routes && tsc",
     "start:prod": "tsc && node dist/server.js",
     "test": "jest --verbose --silent",
     "db:up": "docker-compose --env-file .env up -d",
@@ -50,6 +53,8 @@
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.5",
-    "sequelize-typescript": "^2.1.6"
+    "sequelize-typescript": "^2.1.6",
+    "swagger-ui-express": "^5.0.1",
+    "tsoa": "^6.6.0"
   }
 }

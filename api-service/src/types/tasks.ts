@@ -29,4 +29,5 @@ export interface SearchTasksOptions {
   limit?: number;
   offset?: number;
   to?: Date | string;
+  order?: "ASC" | "DESC";
 }

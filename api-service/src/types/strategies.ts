@@ -71,6 +71,7 @@ export interface SearchStrategiesOptions {
   marketIds?: number[];
   isActive?: boolean;
   assets?: string[];
+  order?: "ASC" | "DESC";
 }
 
 export type StrategyRule = PricePercentageChangeRule;

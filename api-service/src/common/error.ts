@@ -16,8 +16,6 @@ export class ApplicationError extends Error {
     this.statusCode = options.statusCode || this.getStatusCode();
     this.details = options.details;
 
-    console.log(options);
-
     Object.setPrototypeOf(this, new.target.prototype);
     Error.captureStackTrace(this, this.constructor);
   }

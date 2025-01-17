@@ -23,4 +23,5 @@ export interface SearchSignalsOptions {
   limit?: number;
   offset?: number;
   to?: Date | string;
+  order?: "ASC" | "DESC";
 }
