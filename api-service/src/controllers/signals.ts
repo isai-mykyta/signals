@@ -4,7 +4,7 @@ import { ApplicationError } from "../common";
 import { SignalsDto } from "../dtos";
 import { parseQueryParams, validateQueryParams, validateRequestBody } from "../middlewares";
 import { SignalsService } from "../services";
-import { HttpStatusCode, SearchSignalsOptions, Signal } from "../types";
+import { CreateSingalOptions, HttpStatusCode, SearchSignalsOptions } from "../types";
 import { CreateSignalRequestValidator, SearchSignalsRequestValidator } from "../validators";
 
 const validateCreateSignal = validateRequestBody(CreateSignalRequestValidator); 
@@ -25,7 +25,7 @@ export class SignalsController {
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid strategy id")
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid task id")
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid market id")
-  public async createSignal(@Body() body: Omit<Signal, "id" | "createdAt" | "updatedAt">): Promise<SignalsDto> {
+  public async createSignal(@Body() body: CreateSingalOptions): Promise<SignalsDto> {
     const signal = await this.signalsService.createSignal(body);
     return new SignalsDto(signal);
   }

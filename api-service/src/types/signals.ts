@@ -13,6 +13,16 @@ export interface Signal {
   updatedAt: Date | string;
 }
 
+export interface CreateSingalOptions {
+  strategyId: number;
+  taskId: number;
+  asset: string;
+  marketId: number;
+  producedAt?: Date | string;
+  actionsTriggered?: StrategyAction[];
+  metadata?: any;
+}
+
 export interface SearchSignalsOptions {
   ids?: number[];
   strategyIds?: number[];

@@ -10,6 +10,10 @@ export interface Task {
   isActive: boolean;
 }
 
+export interface CreateTaskOptions {
+  strategyId: number;
+}
+
 export enum TaskStatus {
   PENDING = "PENDING",
   RUNNING = "RUNNING",

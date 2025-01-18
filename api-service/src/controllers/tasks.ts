@@ -4,7 +4,7 @@ import { ApplicationError } from "../common";
 import { TasksDto } from "../dtos";
 import { parseQueryParams, validateQueryParams, validateRequestBody } from "../middlewares";
 import { TasksService } from "../services";
-import { HttpStatusCode, SearchTasksOptions, Task } from "../types";
+import { CreateTaskOptions, HttpStatusCode, SearchTasksOptions } from "../types";
 import { CreateTaskValidator, SearchTasksValidator } from "../validators";
 
 const validateCreateTask = validateRequestBody(CreateTaskValidator);
@@ -23,7 +23,7 @@ export class TasksController {
   @SuccessResponse("201")
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid payload")
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid strategy id")
-  public async createTask(@Body() body: Pick<Task, "strategyId">): Promise<TasksDto> {
+  public async createTask(@Body() body: CreateTaskOptions): Promise<TasksDto> {
     const task = await this.tasksService.createTask(body);
     return new TasksDto(task);
   }

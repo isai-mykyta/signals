@@ -67,9 +67,12 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Pick_Task.strategyId_": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"strategyId":{"dataType":"double","required":true}},"validators":{}},
+    "CreateTaskOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "strategyId": {"dataType":"double","required":true},
+        },
+        "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "SearchTasksOptions": {
@@ -228,14 +231,18 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Pick_Signal.Exclude_keyofSignal.id-or-createdAt-or-updatedAt__": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"strategyId":{"dataType":"double","required":true},"taskId":{"dataType":"double","required":true},"asset":{"dataType":"string","required":true},"marketId":{"dataType":"double","required":true},"producedAt":{"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},"actionsTriggered":{"dataType":"array","array":{"dataType":"refObject","ref":"TelegramNotification"}},"metadata":{"dataType":"any"}},"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Omit_Signal.id-or-createdAt-or-updatedAt_": {
-        "dataType": "refAlias",
-        "type": {"ref":"Pick_Signal.Exclude_keyofSignal.id-or-createdAt-or-updatedAt__","validators":{}},
+    "CreateSingalOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "strategyId": {"dataType":"double","required":true},
+            "taskId": {"dataType":"double","required":true},
+            "asset": {"dataType":"string","required":true},
+            "marketId": {"dataType":"double","required":true},
+            "producedAt": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
+            "actionsTriggered": {"dataType":"array","array":{"dataType":"refAlias","ref":"StrategyAction"}},
+            "metadata": {"dataType":"any"},
+        },
+        "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "SearchSignalsOptions": {
@@ -318,7 +325,7 @@ export function RegisterRoutes(app: Router) {
 
     
         const argsTasksController_createTask: Record<string, TsoaRoute.ParameterSchema> = {
-                body: {"in":"body","name":"body","required":true,"ref":"Pick_Task.strategyId_"},
+                body: {"in":"body","name":"body","required":true,"ref":"CreateTaskOptions"},
         };
         app.post('/tasks',
             ...(fetchMiddlewares<RequestHandler>(TasksController)),
@@ -738,7 +745,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsSignalsController_createSignal: Record<string, TsoaRoute.ParameterSchema> = {
-                body: {"in":"body","name":"body","required":true,"ref":"Omit_Signal.id-or-createdAt-or-updatedAt_"},
+                body: {"in":"body","name":"body","required":true,"ref":"CreateSingalOptions"},
         };
         app.post('/signals',
             ...(fetchMiddlewares<RequestHandler>(SignalsController)),
