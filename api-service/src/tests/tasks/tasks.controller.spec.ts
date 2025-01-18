@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-
 import { TasksController } from "../../controllers";
 import { mockTask } from "../fixtures";
 
@@ -31,11 +29,6 @@ jest.mock("../../services", () => {
 
 describe("TasksController", () => {
   let controller: TasksController;
-  
-  const mockResponse = {
-    status: jest.fn().mockReturnThis(),
-    send: jest.fn(),
-  };
 
   beforeEach(() => {
     controller = new TasksController();
@@ -49,7 +42,7 @@ describe("TasksController", () => {
   test("Should create new task.", async () => {
     const task = mockTask(1, 1);
     createTaskMock.mockResolvedValue(task);
-    await controller.createTask({ body: task } as Request, mockResponse as unknown as Response);
+    await controller.createTask(task);
     expect(createTaskMock).toHaveBeenCalledTimes(1);
     expect(createTaskMock).toHaveBeenCalledWith(task);
   });
@@ -58,12 +51,7 @@ describe("TasksController", () => {
     const task = mockTask(1, 1);
     const params = { id: task.id };
     getTaskByIdMock.mockResolvedValue(task);
-    
-    await controller.getTaskById(
-      { params } as unknown as Request, 
-      mockResponse as unknown as Response
-    );
-    
+    await controller.getTaskById(params.id);
     expect(getTaskByIdMock).toHaveBeenCalledTimes(1);
     expect(getTaskByIdMock).toHaveBeenCalledWith(params.id);
   });
@@ -71,14 +59,14 @@ describe("TasksController", () => {
   test("Should search tasks.", async () => {
     const task = mockTask(1, 1);
     searchTasksMock.mockResolvedValue([task]);
-    await controller.searchTasks({} as Request, mockResponse as unknown as Response);
+    await controller.searchTasks({});
     expect(searchTasksMock).toHaveBeenCalledTimes(1);
-    expect(searchTasksMock).toHaveBeenCalledWith(undefined, "DESC");
+    expect(searchTasksMock).toHaveBeenCalledWith({}, "DESC");
   });
 
   test("Should delete task by id.", async () => {
     const params = { id: 1 };
-    await controller.deleteTaskById({ params } as unknown as Request, mockResponse as unknown as Response);
+    await controller.deleteTaskById(params.id);
     expect(deleteTaskByIdMock).toHaveBeenCalledTimes(1);
     expect(deleteTaskByIdMock).toHaveBeenCalledWith(params.id);
   });
@@ -87,12 +75,7 @@ describe("TasksController", () => {
     const task = mockTask(1, 1);
     const params = { id: task.id };
     getTaskByIdMock.mockResolvedValue(task);
-    
-    await controller.logTaskSignal(
-      { params } as unknown as Request, 
-      mockResponse as unknown as Response
-    );
-
+    await controller.logTaskSignal(params.id);
     expect(logTaskSignalMock).toHaveBeenCalledTimes(1);
     expect(logTaskSignalMock).toHaveBeenCalledWith(params.id);
     expect(getTaskByIdMock).toHaveBeenCalledTimes(1);
@@ -103,12 +86,7 @@ describe("TasksController", () => {
     const task = mockTask(1, 1);
     const params = { id: task.id };
     getTaskByIdMock.mockResolvedValue(task);
-    
-    await controller.runTaskById(
-      { params } as unknown as Request, 
-      mockResponse as unknown as Response
-    );
-
+    await controller.runTaskById(params.id);
     expect(runTaskByIdMock).toHaveBeenCalledTimes(1);
     expect(runTaskByIdMock).toHaveBeenCalledWith(params.id);
     expect(getTaskByIdMock).toHaveBeenCalledTimes(1);
@@ -119,12 +97,7 @@ describe("TasksController", () => {
     const task = mockTask(1, 1);
     const params = { id: task.id };
     getTaskByIdMock.mockResolvedValue(task);
-    
-    await controller.completeTaskById(
-      { params } as unknown as Request, 
-      mockResponse as unknown as Response
-    );
-
+    await controller.completeTaskById(params.id);
     expect(completeTaskByIdMock).toHaveBeenCalledTimes(1);
     expect(completeTaskByIdMock).toHaveBeenCalledWith(params.id);
     expect(getTaskByIdMock).toHaveBeenCalledTimes(1);
@@ -135,12 +108,7 @@ describe("TasksController", () => {
     const task = mockTask(1, 1);
     const params = { id: task.id };
     getTaskByIdMock.mockResolvedValue(task);
-    
-    await controller.stopTaskById(
-      { params } as unknown as Request, 
-      mockResponse as unknown as Response
-    );
-
+    await controller.stopTaskById(params.id);
     expect(stopTaskByIdMock).toHaveBeenCalledTimes(1);
     expect(stopTaskByIdMock).toHaveBeenCalledWith(params.id);
     expect(getTaskByIdMock).toHaveBeenCalledTimes(1);

@@ -17,6 +17,16 @@ export interface SearchMarketsOptions {
   order?: "ASC" | "DESC"
 }
 
+export interface CreateMarketOptions {
+  name: string;
+  url: string;
+}
+
+export interface UpdateMarketOptions {
+  name?: string;
+  url?: string;
+}
+
 export interface SearchQuery {
   where: Record<string, any>;
 }

@@ -25,5 +25,6 @@ module.exports = {
     "src/app.ts",
     "src/server.ts",
     "src/migrations",
+    "src/spec",
   ]
 };

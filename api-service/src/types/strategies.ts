@@ -61,6 +61,16 @@ export interface Strategy {
   taskSchedule?: TaskSchedule;
 }
 
+export interface CreateStrategyOptions {
+  name: string;
+  marketId: number;
+  assets: string[];
+  rules: StrategyRule[];
+  actions: StrategyAction[];
+  taskType: TaskType;
+  taskSchedule?: TaskSchedule;
+}
+
 export interface SearchStrategiesOptions {
   ids?: number[];
   names?: string[];

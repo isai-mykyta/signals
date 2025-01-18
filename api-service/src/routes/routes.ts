@@ -180,14 +180,18 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Pick_Strategy.Exclude_keyofStrategy.id-or-createdAt-or-updatedAt-or-isActive__": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true},"marketId":{"dataType":"double","required":true},"assets":{"dataType":"array","array":{"dataType":"string"},"required":true},"rules":{"dataType":"array","array":{"dataType":"refObject","ref":"PricePercentageChangeRule"},"required":true},"actions":{"dataType":"array","array":{"dataType":"refObject","ref":"TelegramNotification"},"required":true},"taskType":{"ref":"TaskType","required":true},"taskSchedule":{"ref":"TaskSchedule"}},"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Omit_Strategy.id-or-createdAt-or-updatedAt-or-isActive_": {
-        "dataType": "refAlias",
-        "type": {"ref":"Pick_Strategy.Exclude_keyofStrategy.id-or-createdAt-or-updatedAt-or-isActive__","validators":{}},
+    "CreateStrategyOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "marketId": {"dataType":"double","required":true},
+            "assets": {"dataType":"array","array":{"dataType":"string"},"required":true},
+            "rules": {"dataType":"array","array":{"dataType":"refAlias","ref":"StrategyRule"},"required":true},
+            "actions": {"dataType":"array","array":{"dataType":"refAlias","ref":"StrategyAction"},"required":true},
+            "taskType": {"ref":"TaskType","required":true},
+            "taskSchedule": {"ref":"TaskSchedule"},
+        },
+        "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "SearchStrategiesOptions": {
@@ -226,7 +230,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Pick_Signal.Exclude_keyofSignal.id-or-createdAt-or-updatedAt__": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"strategyId":{"dataType":"double","required":true},"marketId":{"dataType":"double","required":true},"taskId":{"dataType":"double","required":true},"asset":{"dataType":"string","required":true},"producedAt":{"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},"actionsTriggered":{"dataType":"array","array":{"dataType":"refObject","ref":"TelegramNotification"}},"metadata":{"dataType":"any"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"strategyId":{"dataType":"double","required":true},"taskId":{"dataType":"double","required":true},"asset":{"dataType":"string","required":true},"marketId":{"dataType":"double","required":true},"producedAt":{"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},"actionsTriggered":{"dataType":"array","array":{"dataType":"refObject","ref":"TelegramNotification"}},"metadata":{"dataType":"any"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Omit_Signal.id-or-createdAt-or-updatedAt_": {
@@ -263,9 +267,13 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Pick_Market.name-or-url_": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"name":{"dataType":"string","required":true},"url":{"dataType":"string","required":true}},"validators":{}},
+    "CreateMarketOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "url": {"dataType":"string","required":true},
+        },
+        "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "SearchMarketsOptions": {
@@ -279,6 +287,15 @@ const models: TsoaRoute.Models = {
             "offset": {"dataType":"double"},
             "to": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
             "order": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["ASC"]},{"dataType":"enum","enums":["DESC"]}]},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateMarketOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string"},
+            "url": {"dataType":"string"},
         },
         "additionalProperties": true,
     },
@@ -541,7 +558,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsStrategiesController_createStrategy: Record<string, TsoaRoute.ParameterSchema> = {
-                body: {"in":"body","name":"body","required":true,"ref":"Omit_Strategy.id-or-createdAt-or-updatedAt-or-isActive_"},
+                body: {"in":"body","name":"body","required":true,"ref":"CreateStrategyOptions"},
         };
         app.post('/strategies',
             ...(fetchMiddlewares<RequestHandler>(StrategiesController)),
@@ -841,7 +858,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsMarketsController_createMarket: Record<string, TsoaRoute.ParameterSchema> = {
-                body: {"in":"body","name":"body","required":true,"ref":"Pick_Market.name-or-url_"},
+                body: {"in":"body","name":"body","required":true,"ref":"CreateMarketOptions"},
         };
         app.post('/markets',
             ...(fetchMiddlewares<RequestHandler>(MarketsController)),
@@ -962,7 +979,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsMarketsController_updateMarketById: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"dataType":"double"},
-                body: {"in":"body","name":"body","required":true,"ref":"Pick_Market.name-or-url_"},
+                body: {"in":"body","name":"body","required":true,"ref":"UpdateMarketOptions"},
         };
         app.put('/markets/:id',
             ...(fetchMiddlewares<RequestHandler>(MarketsController)),

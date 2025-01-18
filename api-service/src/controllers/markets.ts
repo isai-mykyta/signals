@@ -4,7 +4,7 @@ import { ApplicationError } from "../common";
 import { MarketResponseDto } from "../dtos";
 import { parseQueryParams, validateQueryParams, validateRequestBody } from "../middlewares";
 import { MarketsService } from "../services";
-import { HttpStatusCode, Market, SearchMarketsOptions } from "../types";
+import { CreateMarketOptions, HttpStatusCode, SearchMarketsOptions, UpdateMarketOptions } from "../types";
 import { CreateMarketRequestValidator, SearchMarketsRequestValidator, UpdateMarketRequestValidator } from "../validators";
 
 const validateCreateMarket = validateRequestBody(CreateMarketRequestValidator);
@@ -23,7 +23,7 @@ export class MarketsController {
   @Middlewares([validateCreateMarket])
   @SuccessResponse("201")
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid payload")
-  public async createMarket(@Body() body: Pick<Market, "name" | "url">): Promise<MarketResponseDto> {
+  public async createMarket(@Body() body: CreateMarketOptions): Promise<MarketResponseDto> {
     const market = await this.marketsService.createMarket({ name: body.name, url: body.url });
     return new MarketResponseDto(market);
   }
@@ -72,7 +72,7 @@ export class MarketsController {
   @Middlewares([validateUpdateMarket])
   @SuccessResponse("200")
   @Response<ApplicationError>(HttpStatusCode.NOT_FOUND, "Market is not found.")
-  public async updateMarketById(@Path() id: number, @Body() body: Pick<Market, "name" | "url">): Promise<MarketResponseDto> {
+  public async updateMarketById(@Path() id: number, @Body() body: UpdateMarketOptions): Promise<MarketResponseDto> {
     await this.marketsService.updateMarketById(id, body);
     const market = await this.marketsService.getMarketById(id);
     return new MarketResponseDto(market);

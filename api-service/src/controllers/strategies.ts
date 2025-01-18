@@ -4,10 +4,11 @@ import { ApplicationError } from "../common";
 import { StrategiesDto } from "../dtos";
 import { parseQueryParams, validateQueryParams, validateStrategyPaylod } from "../middlewares";
 import { StrategiesService } from "../services";
-import { HttpStatusCode, SearchStrategiesOptions, Strategy } from "../types";
+import { CreateStrategyOptions, HttpStatusCode, SearchStrategiesOptions } from "../types";
 import { SearchStrategiesRequestValidator } from "../validators";
 
 const validateStrategyQueryParams = validateQueryParams(SearchStrategiesRequestValidator);
+const validateCreateStrategy = validateStrategyPaylod();
 
 @Route("strategies")
 export class StrategiesController {
@@ -18,11 +19,11 @@ export class StrategiesController {
   * @summary Returns created strategy
   */
   @Post()
-  @Middlewares([validateStrategyPaylod])
+  @Middlewares([validateCreateStrategy])
   @SuccessResponse("201")
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid payload")
   @Response<ApplicationError>(HttpStatusCode.BAD_REQUEST, "Invalid market id")
-  public async createStrategy(@Body() body: Omit<Strategy, "id" | "createdAt" | "updatedAt" | "isActive">): Promise<StrategiesDto> {
+  public async createStrategy(@Body() body: CreateStrategyOptions): Promise<StrategiesDto> {
     const strategy = await this.strategiesService.createStrategy(body);
     return new StrategiesDto(strategy);
   }

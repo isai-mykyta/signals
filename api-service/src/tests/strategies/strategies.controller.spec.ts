@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-
 import { StrategiesController } from "../../controllers";
 import { mockStrategy } from "../fixtures";
 
@@ -28,11 +26,6 @@ jest.mock("../../services", () => {
 describe("StrategiesController", () => {
   let controller: StrategiesController;
 
-  const mockResponse = {
-    status: jest.fn().mockReturnThis(),
-    send: jest.fn(),
-  };
-
   beforeEach(() => {
     controller = new StrategiesController();
     jest.clearAllMocks();
@@ -45,7 +38,7 @@ describe("StrategiesController", () => {
   test("Should create new strategy.", async () => {
     const strategy = mockStrategy(1, "Mock strategy");
     createStrategyMock.mockResolvedValue(strategy);
-    await controller.createStrategy({ body: strategy } as Request, mockResponse as unknown as Response);
+    await controller.createStrategy(strategy);
     expect(createStrategyMock).toHaveBeenCalledTimes(1);
     expect(createStrategyMock).toHaveBeenCalledWith(strategy);
   });
@@ -54,12 +47,7 @@ describe("StrategiesController", () => {
     const strategy = mockStrategy(1, "Mock strategy");
     const params = { id: strategy.id };
     getStrategyByIdMock.mockResolvedValue(strategy);
-  
-    await controller.getStrategyById(
-      { params } as unknown as Request, 
-      mockResponse as unknown as Response
-    );
-  
+    await controller.getStrategyById(params.id);
     expect(getStrategyByIdMock).toHaveBeenCalledTimes(1);
     expect(getStrategyByIdMock).toHaveBeenCalledWith(params.id);
   });
@@ -67,14 +55,14 @@ describe("StrategiesController", () => {
   test("Should search strategies.", async () => {
     const strategy = mockStrategy(1, "Mock strategy");
     searchStrategiesMock.mockResolvedValue([strategy]);
-    await controller.searchStrategies({} as Request, mockResponse as unknown as Response);
+    await controller.searchStrategies({});
     expect(searchStrategiesMock).toHaveBeenCalledTimes(1);
-    expect(searchStrategiesMock).toHaveBeenCalledWith(undefined, "DESC");
+    expect(searchStrategiesMock).toHaveBeenCalledWith({}, "DESC");
   });
 
   test("Should delete strategy by id.", async () => {
     const params = { id: 1 };
-    await controller.deleteStrategyById({ params } as unknown as Request, mockResponse as unknown as Response);
+    await controller.deleteStrategyById(params.id);
     expect(deleteStrategyByIdMock).toHaveBeenCalledTimes(1);
     expect(deleteStrategyByIdMock).toHaveBeenCalledWith(params.id);
   });
@@ -82,7 +70,7 @@ describe("StrategiesController", () => {
   test("Should active strategy by id.", async () => {
     const params = { id: 1 };
     activateStrategyByIdMock.mockResolvedValue(mockStrategy(1, "Mock strategy"));
-    await controller.activateStrategyById({ params } as unknown as Request, mockResponse as unknown as Response);
+    await controller.activateStrategyById(params.id);
     expect(activateStrategyByIdMock).toHaveBeenCalledTimes(1);
     expect(activateStrategyByIdMock).toHaveBeenCalledWith(params.id);
   });
@@ -90,7 +78,7 @@ describe("StrategiesController", () => {
   test("Should disable strategy by id.", async () => {
     const params = { id: 1 };
     disableStrategyByIdMock.mockResolvedValue(mockStrategy(1, "Mock strategy"));
-    await controller.disableStrategyById({ params } as unknown as Request, mockResponse as unknown as Response);
+    await controller.disableStrategyById(params.id);
     expect(disableStrategyByIdMock).toHaveBeenCalledTimes(1);
     expect(disableStrategyByIdMock).toHaveBeenCalledWith(params.id);
   });

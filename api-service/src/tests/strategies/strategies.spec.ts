@@ -111,6 +111,7 @@ describe("Strategies Integration Tests", () => {
           expect(response.status).toBe(400);
         });
     });
+    
 
     test("Should throw 400 if trying to create a new strategy with invalid rules.", async () => {
       await request(application)

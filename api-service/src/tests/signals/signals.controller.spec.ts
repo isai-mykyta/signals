@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-
 import { SignalsController } from "../../controllers";
 import { mockSignal } from "../fixtures";
 
@@ -24,11 +22,6 @@ jest.mock("../../services", () => {
 describe("SinglasController", () => {
   let controller: SignalsController;
   
-  const mockResponse = {
-    status: jest.fn().mockReturnThis(),
-    send: jest.fn(),
-  };
-  
   beforeEach(() => {
     controller = new SignalsController();
     jest.clearAllMocks();
@@ -41,7 +34,7 @@ describe("SinglasController", () => {
   test("Should create new signal.", async () => {
     const signal = mockSignal(1);
     createSignalMock.mockResolvedValue(signal);
-    await controller.createSignal({ body: signal } as Request, mockResponse as unknown as Response);
+    await controller.createSignal(signal);
     expect(createSignalMock).toHaveBeenCalledTimes(1);
     expect(createSignalMock).toHaveBeenCalledWith(signal);
   });
@@ -50,12 +43,7 @@ describe("SinglasController", () => {
     const signal = mockSignal(1);
     const params = { id: signal.id };
     getSignalByIdMock.mockResolvedValue(signal);
-    
-    await controller.getSignalById(
-      { params } as unknown as Request, 
-      mockResponse as unknown as Response
-    );
-    
+    await controller.getSignalById(params.id);
     expect(getSignalByIdMock).toHaveBeenCalledTimes(1);
     expect(getSignalByIdMock).toHaveBeenCalledWith(params.id);
   });
@@ -63,14 +51,14 @@ describe("SinglasController", () => {
   test("Should search signals.", async () => {
     const signal = mockSignal(1);
     searchSignalsMock.mockResolvedValue([signal]);
-    await controller.searchSignals({} as Request, mockResponse as unknown as Response);
+    await controller.searchSignals({});
     expect(searchSignalsMock).toHaveBeenCalledTimes(1);
-    expect(searchSignalsMock).toHaveBeenCalledWith(undefined, "DESC");
+    expect(searchSignalsMock).toHaveBeenCalledWith({}, "DESC");
   });
   
   test("Should delete signal by id.", async () => {
     const params = { id: 1 };
-    await controller.deleteSignalById({ params } as unknown as Request, mockResponse as unknown as Response);
+    await controller.deleteSignalById(params.id);
     expect(deleteSignalByIdMock).toHaveBeenCalledTimes(1);
     expect(deleteSignalByIdMock).toHaveBeenCalledWith(params.id);
   });

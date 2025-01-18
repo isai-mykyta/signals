@@ -1,12 +1,14 @@
 {
   "entryFile": "src/server.ts",
-  "noImplicitAdditionalProperties": "throw",
+  "noImplicitAdditionalProperties": "ignore",
   "controllerPathGlobs": ["src/controllers/*.ts"],
   "spec": {
     "outputDirectory": "src/spec",
     "specVersion": 3
   },
   "routes": {
-    "routesDir": "src/routes"
+    "routesDir": "src/routes",
+    "middleware": "express",
+    "disableValidation": true
   }
 }
