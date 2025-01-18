@@ -4,7 +4,12 @@
   "controllerPathGlobs": ["src/controllers/*.ts"],
   "spec": {
     "outputDirectory": "src/spec",
-    "specVersion": 3
+    "specVersion": 3,
+    "info": {
+      "title": "API Service",
+      "description": "A description for my API Service",
+      "version": "0.0.1"
+    }
   },
   "routes": {
     "routesDir": "src/routes",
