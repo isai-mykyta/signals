@@ -26,6 +26,7 @@ const strategyPayload = {
   name: "test strategy",
   marketId: 1,
   assets: ["BTCTUSD"],
+  isActive: true,
   taskType: TaskType.ONE_TIME,
   taskSchedule: {
     startAt: Date.now(),

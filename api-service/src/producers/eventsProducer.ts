@@ -39,35 +39,26 @@ export abstract class EventsProducer {
   }
 
   public async connect(): Promise<void> {
-    try {
-      this.connection = await amqp.connect(this.rmqUrl);
+    this.connection = await amqp.connect(this.rmqUrl);
 
-      this.connection.on("error", this.handleConnectionError);
-      this.connection.on("close", this.handleConnectionClose);
+    this.connection.on("error", this.handleConnectionError);
+    this.connection.on("close", this.handleConnectionClose);
   
-      this.channel = await this.connection.createChannel();
-      await this.channel.assertQueue(this.queueName, { durable: true });
+    this.channel = await this.connection.createChannel();
+    await this.channel.assertQueue(this.queueName, { durable: true });
   
-      this.channel.on("error", this.handleChannelError);
-      this.channel.on("close", this.handleChannelClose);
+    this.channel.on("error", this.handleChannelError);
+    this.channel.on("close", this.handleChannelClose);
   
-      this.isConnected = true;
-      console.log(`${this.queueName} Connected to RabbitMQ`);
-    } catch (error) {
-      console.error(`EventProducer connection failed`, error);
-      this.isConnected = true;
-    }
+    this.isConnected = true;
+    console.log(`${this.queueName} Connected to RabbitMQ`);
   }
 
   public async close(): Promise<void> {
-    try {
-      await this.channel.close();
-      await this.connection.close();
-      this.isConnected = false;
-      console.log(`${this.queueName} Connection closed gracefully`);
-    } catch (error) {
-      console.error(`${this.queueName} Error during close`, error);
-    }
+    await this.channel.close();
+    await this.connection.close();
+    this.isConnected = false;
+    console.log(`${this.queueName} Connection closed gracefully`);
   }
 
   public async sendMessage<Message>(message: Message, options: amqp.Options.Publish = {}): Promise<void> {
@@ -76,12 +67,8 @@ export abstract class EventsProducer {
       return;
     }
 
-    try {
-      const msgBuffer = Buffer.from(JSON.stringify(message));
-      const sendOptions = { persistent: true, ...options };
-      this.channel.sendToQueue(this.queueName, msgBuffer, sendOptions);
-    } catch (error) {
-      console.error(`${this.queueName} Failed to send message to queue:`, error);
-    }
+    const msgBuffer = Buffer.from(JSON.stringify(message));
+    const sendOptions = { persistent: true, ...options };
+    this.channel.sendToQueue(this.queueName, msgBuffer, sendOptions);
   }
 }
