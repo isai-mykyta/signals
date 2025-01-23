@@ -10,4 +10,5 @@ export const sequelizeConfig = {
   port: Number(process.env.POSTGRES_PORT) || 5432,
   dialect: "postgres" as Dialect,
   models: [MarketModel, StrategyModel, TaskModel, SignalModel],
+  logging: false
 };

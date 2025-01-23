@@ -1,16 +1,22 @@
 version: '3.8'
 
 services:
-  redis:
-    image: redis:alpine
-    container_name: my-redis
-    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+  rmq:
+    image: rabbitmq:3-management
+    container_name: rmq
     ports:
-      - "6379:6379"
+      - "5672:5672" 
+      - "15672:15672"
     environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
-      interval: 5s
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  rabbitmq_data:

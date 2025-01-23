@@ -9,6 +9,7 @@ export enum HttpStatusCode {
 export enum CustomErrorType {
   VALIDATION_ERROR,
   NOT_FOUND,
+  INTERNAL_ERROR,
 }
 
 export interface BuildDateRangeFilterOptions {
@@ -20,3 +21,11 @@ export interface DateRangeFilter {
   [Op.gte]?: Date | string;
   [Op.lte]?: Date | string;
 };
+
+export interface EventsProducerOptions {
+  queueName: string;
+  user: string;
+  password: string;
+  host: string;
+  port: number;
+}

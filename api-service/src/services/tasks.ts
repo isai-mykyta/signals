@@ -9,7 +9,7 @@ export class TasksService {
   public async createTask(task: Partial<Task>): Promise<Task> {
     const strategy = await this.strategiesRepository.getStrategyById(task.strategyId);
 
-    if (!strategy) {
+    if (!strategy || !strategy.isActive) {
       throw new ApplicationError({
         type: CustomErrorType.VALIDATION_ERROR,
         message: "Invalid strategy id."
