@@ -29,29 +29,30 @@ fi
 echo "Running migrations..."
 yarn db:migrate
 
-echo "Starting Redis..."
-docker-compose -f docker-compose.yml up -d
+echo "Starting RabbitMQ..."
+# Start only the RabbitMQ service defined in your docker-compose.yml
+docker-compose -f docker-compose.yml up -d rmq
 
-echo "Waiting for Redis to become healthy..."
+echo "Waiting for RabbitMQ to become healthy..."
 
-IS_REDIS_HEALTHY="0"
-REDIS_RETRY_COUNT=0
-MAX_REDIS_RETRIES=10
+IS_RMQ_HEALTHY="0"
+RMQ_RETRY_COUNT=0
+MAX_RMQ_RETRIES=10
 
-while [ "$IS_REDIS_HEALTHY" -ne 1 ] && [ "$REDIS_RETRY_COUNT" -lt "$MAX_REDIS_RETRIES" ]; do
-  REDIS_STATUS=$(docker inspect --format='{{.State.Health.Status}}' my-redis 2>/dev/null)
-  if [ "$REDIS_STATUS" == "healthy" ]; then
-    IS_REDIS_HEALTHY=1
-    echo "Redis is healthy!"
+while [ "$IS_RMQ_HEALTHY" -ne 1 ] && [ "$RMQ_RETRY_COUNT" -lt "$MAX_RMQ_RETRIES" ]; do
+  RMQ_STATUS=$(docker inspect --format='{{.State.Health.Status}}' rmq 2>/dev/null)
+  if [ "$RMQ_STATUS" == "healthy" ]; then
+    IS_RMQ_HEALTHY=1
+    echo "RabbitMQ is healthy!"
   else
-    echo "Redis not ready yet... ($REDIS_RETRY_COUNT/$MAX_REDIS_RETRIES)"
-    ((REDIS_RETRY_COUNT++))
+    echo "RabbitMQ not ready yet... ($RMQ_RETRY_COUNT/$MAX_RMQ_RETRIES)"
+    ((RMQ_RETRY_COUNT++))
     sleep 5
   fi
 done
 
-if [ "$IS_REDIS_HEALTHY" -ne 1 ]; then
-  echo "Redis did not become healthy in time"
+if [ "$IS_RMQ_HEALTHY" -ne 1 ]; then
+  echo "RabbitMQ did not become healthy in time"
   exit 1
 fi
 
