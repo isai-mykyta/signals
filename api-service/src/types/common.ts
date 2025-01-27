@@ -1,3 +1,4 @@
+import amqp from "amqplib";
 import { Op } from "sequelize";
 
 export enum HttpStatusCode {
@@ -23,7 +24,10 @@ export interface DateRangeFilter {
 };
 
 export interface EventsProducerOptions {
-  queueName: string;
+  name: string
+}
+
+export interface RmqClientOptions {
   user: string;
   password: string;
   host: string;

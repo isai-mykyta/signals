@@ -1,10 +1,12 @@
 import { ApplicationError } from "../common";
+import { StrategiesProducer } from "../producers";
 import { MarketsRepository, StrategiesRepository } from "../repositories";
 import { CustomErrorType, SearchStrategiesOptions, Strategy } from "../types";
 
 export class StrategiesService {
   private strategiesRepository = new StrategiesRepository();
   private marketsRepository = new MarketsRepository();
+  private strategiesProducer = new StrategiesProducer();
 
   public async createStrategy(options: Partial<Strategy>): Promise<Strategy> {
     const market = await this.marketsRepository.getMarketById(options.marketId);
@@ -16,7 +18,9 @@ export class StrategiesService {
       });
     }
 
-    return this.strategiesRepository.createStrategy(options);
+    const strategy = await this.strategiesRepository.createStrategy(options);
+    await this.strategiesProducer.sendCreationMessage(strategy);
+    return strategy;
   }
 
   public async getStrategyById(id: number): Promise<Strategy> {
