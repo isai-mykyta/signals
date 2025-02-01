@@ -5,7 +5,7 @@ class StrategiesProducer extends EventsProducer {
   public createStrategyQueue = process.env.CREATE_STRATEGY_QUEUE;
 
   constructor () {
-    super({ name: "StrategiesProducer" });
+    super();
   }
 
   public async connectChannel(): Promise<void> {
@@ -18,7 +18,7 @@ class StrategiesProducer extends EventsProducer {
       await this.connectChannel();
     }
 
-    this.sendMessage(strategy);
+    this.sendMessage(this.createStrategyQueue, strategy);
     console.log(`RMQ message is sent to ${this.createStrategyQueue}`, strategy);
   }
 }

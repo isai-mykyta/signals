@@ -23,10 +23,6 @@ export interface DateRangeFilter {
   [Op.lte]?: Date | string;
 };
 
-export interface EventsProducerOptions {
-  name: string
-}
-
 export interface RmqClientOptions {
   user: string;
   password: string;

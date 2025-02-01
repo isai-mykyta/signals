@@ -1,0 +1,53 @@
+import amqp from "amqplib";
+
+import { rmqConfig } from "./configs";
+import { RmqClientOptions } from "./types";
+
+class RmqClient {
+  public readonly rmqUrl: string;
+  public connection: amqp.Connection | null = null;
+  public isConnected: boolean = false;
+
+  constructor (options: RmqClientOptions) {
+    this.rmqUrl = this.buildRmqUrl(options);
+    this.connect();
+  }
+
+  private handleConnectionError(error: unknown): void {
+    console.error(`RMQ Connection error:`, error);
+    this.isConnected = false;
+  }
+
+  private handleConnectionClose(): void {
+    console.warn(`RMQ Connection closed`);
+    this.isConnected = false;
+  }
+  
+  private buildRmqUrl(options: RmqClientOptions): string {
+    const { user, password, host, port } = options;
+    const encodedUser = encodeURIComponent(user);
+    const encodedPassword = encodeURIComponent(password);
+    return `amqp://${encodedUser}:${encodedPassword}@${host}:${port}`;
+  }
+
+  public async connect(): Promise<void> {
+    this.connection = await amqp.connect(this.rmqUrl);
+    this.connection.on("error", this.handleConnectionError);
+    this.connection.on("close", this.handleConnectionClose);
+    this.isConnected = true;
+    console.log("RMQ connection created...");
+  }
+
+  public async close(): Promise<void> {
+    if (this.connection) {
+      await this.connection.close();
+      this.isConnected = false;
+      console.log(`RMQ connection closed gracefully`);
+    }
+  }
+}
+
+const rmqClient = new RmqClient(rmqConfig);
+
+export { rmqClient };
+

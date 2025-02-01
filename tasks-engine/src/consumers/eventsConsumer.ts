@@ -2,7 +2,7 @@ import amqp from "amqplib";
 
 import { rmqClient } from "../rmqClient";
 
-export abstract class EventsProducer {
+export abstract class EventsConsumer {
   public isConnected: boolean = false;
   protected connection: amqp.Connection;
   protected channel: amqp.Channel | null = null;
@@ -37,16 +37,5 @@ export abstract class EventsProducer {
       this.isConnected = false;
       console.log(`RMQ channel closed gracefully`);
     }
-  }
-
-  public sendMessage<Message>(queue: string, message: Message, options: amqp.Options.Publish = {}): void {
-    if (!this.isConnected) {
-      console.error(`RMQ can't send message when queue is not connected`);
-      return;
-    }
-
-    const msgBuffer = Buffer.from(JSON.stringify(message));
-    const sendOptions = { persistent: true, ...options };
-    this.channel.sendToQueue(queue, msgBuffer, sendOptions);
   }
 }
