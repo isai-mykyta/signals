@@ -30,6 +30,14 @@ jest.mock("../../repositories", () => {
   };
 });
 
+jest.mock("../../producers", () => {
+  return {
+    strategiesProducer: {
+      sendCreationMessage: jest.fn()
+    }
+  };
+});
+
 describe("StrategiesService", () => {
   let service: StrategiesService;
 

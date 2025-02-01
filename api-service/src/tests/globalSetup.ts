@@ -10,10 +10,13 @@ import { sequelizeConfig } from "../configs/sequelize";
 export const CONSTANTS = {
   POSTGRES_USER: "test-user",
   POSTGRES_PASSWORD: "test-password",
-  POSTGRES_DB: "signals_service"
+  POSTGRES_DB: "signals_service",
+  RABBITMQ_PASSWORD: "guest",
+  RABBITMQ_USER: "guest",
+  CREATE_STRATEGY_QUEUE: "create_strategy_queue"
 };
 
-export const startTestContainer = async (): Promise<StartedTestContainer> => {
+export const startTestPgContainer = async (): Promise<StartedTestContainer> => {
   return await new GenericContainer("postgres")
     .withEnvironment(CONSTANTS)
     .withExposedPorts(5432)
@@ -23,6 +26,12 @@ export const startTestContainer = async (): Promise<StartedTestContainer> => {
       timeout: 500,
       retries: 5,
     })
+    .start();
+};
+
+export const startTestRmqContainer = async (): Promise<StartedTestContainer> => {
+  return await new GenericContainer("rabbitmq:3-management")
+    .withExposedPorts(5672, 15672)
     .start();
 };
 
@@ -45,22 +54,34 @@ export const runMigrations = async (sequelize: Sequelize): Promise<void> => {
 export default async function globalSetup() {
   console.log("[globalSetup] Starting Postgres container...");
   
-  const container: StartedTestContainer = await startTestContainer();
-  const host = container.getHost();
-  const port = container.getMappedPort(5432);
+  const pgContainer: StartedTestContainer = await startTestPgContainer();
+  const pgHost = pgContainer.getHost();
+  const pgPort = pgContainer.getMappedPort(5432);
 
-  process.env.POSTGRES_HOST = host;
-  process.env.POSTGRES_PORT = port.toString();
+  process.env.POSTGRES_HOST = pgHost;
+  process.env.POSTGRES_PORT = pgPort.toString();
   process.env.POSTGRES_USER = CONSTANTS.POSTGRES_USER;
   process.env.POSTGRES_PASSWORD = CONSTANTS.POSTGRES_PASSWORD;
   process.env.POSTGRES_DB = CONSTANTS.POSTGRES_DB;
+
+  console.log("[globalSetup] Starting RabbitMQ container...");
+
+  const rmqContainer: StartedTestContainer = await startTestRmqContainer();
+  const rmqHost = rmqContainer.getHost();
+  const rmqPort = rmqContainer.getMappedPort(5672);
+
+  process.env.RABBITMQ_HOST = rmqHost;
+  process.env.RABBITMQ_PORT = rmqPort.toString();
+  process.env.RABBITMQ_PASSWORD = CONSTANTS.RABBITMQ_PASSWORD;
+  process.env.RABBITMQ_USER = CONSTANTS.RABBITMQ_USER;
+  process.env.CREATE_STRATEGY_QUEUE = CONSTANTS.CREATE_STRATEGY_QUEUE;
 
   console.log("[globalSetup] Running migrations...");
 
   const sequelize = new Sequelize({
     ...sequelizeConfig,
-    host,
-    port: Number(port),
+    host: pgHost,
+    port: Number(pgPort),
     username: CONSTANTS.POSTGRES_USER,
     password: CONSTANTS.POSTGRES_PASSWORD,
     database: CONSTANTS.POSTGRES_DB,
@@ -76,7 +97,8 @@ export default async function globalSetup() {
   fs.writeFileSync(
     globalConfigPath,
     JSON.stringify({
-      containerId: container.getId(),
+      pgContainerId: pgContainer.getId(),
+      rmqContainerId: rmqContainer.getId()
     })
   );
 
