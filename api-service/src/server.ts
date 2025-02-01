@@ -5,8 +5,9 @@ dotenv.config();
 
 import { Sequelize } from "sequelize-typescript";
 
-import { app, rmqClient } from "./app";
+import { app } from "./app";
 import { sequelizeConfig } from "./configs";
+import { rmqClient } from "./rmqClient";
 
 const HTTP_PORT = process.env.HTTP_PORT || 8080;
 const sequelize = new Sequelize(sequelizeConfig);
@@ -15,8 +16,7 @@ const start = async () => {
   try {
     await sequelize.sync({ force: false });
     console.log("Connected to the database.");
-    await rmqClient.connect();
-  
+
     app.listen(HTTP_PORT, () => {
       console.log(`API service is running on port ${HTTP_PORT}...`);
     });

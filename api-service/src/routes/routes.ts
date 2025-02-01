@@ -4,13 +4,13 @@
 import type { TsoaRoute } from '@tsoa/runtime';
 import {  fetchMiddlewares, ExpressTemplateService } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { TasksController } from './../controllers/tasks';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { StrategiesController } from './../controllers/strategies';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { SignalsController } from './../controllers/signals';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { MarketsController } from './../controllers/markets';
-// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { TasksController } from './../controllers/tasks';
 import type { Request as ExRequest, Response as ExResponse, RequestHandler, Router } from 'express';
 
 
@@ -18,6 +18,82 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "TaskStatus": {
+        "dataType": "refEnum",
+        "enums": ["PENDING","RUNNING","COMPLETED","STOPPED"],
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "TasksDto": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"double","required":true},
+            "strategyId": {"dataType":"double","required":true},
+            "createdAt": {"dataType":"string","required":true},
+            "updatedAt": {"dataType":"string","required":true},
+            "startedAt": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"undefined"}],"required":true},
+            "endedAt": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"undefined"}],"required":true},
+            "lastSignalAt": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"undefined"}]},
+            "status": {"ref":"TaskStatus","required":true},
+            "isActive": {"dataType":"boolean","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "HttpStatusCode": {
+        "dataType": "refEnum",
+        "enums": [400,500,404],
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CustomErrorType": {
+        "dataType": "refEnum",
+        "enums": [0,1,2],
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Record_string.unknown_": {
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"},"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ApplicationError": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "message": {"dataType":"string","required":true},
+            "stack": {"dataType":"string"},
+            "statusCode": {"ref":"HttpStatusCode"},
+            "type": {"ref":"CustomErrorType","required":true},
+            "details": {"dataType":"union","subSchemas":[{"ref":"Record_string.unknown_"},{"dataType":"string"},{"dataType":"double"},{"dataType":"array","array":{"dataType":"string"}},{"dataType":"array","array":{"dataType":"double"}}]},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateTaskOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "strategyId": {"dataType":"double","required":true},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "SearchTasksOptions": {
+        "dataType": "refObject",
+        "properties": {
+            "ids": {"dataType":"array","array":{"dataType":"double"}},
+            "strategyIds": {"dataType":"array","array":{"dataType":"double"}},
+            "startedAtFrom": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},
+            "endedAtFrom": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},
+            "lastSignalAtFrom": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},
+            "statuses": {"dataType":"array","array":{"dataType":"refEnum","ref":"TaskStatus"}},
+            "isActive": {"dataType":"boolean"},
+            "from": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
+            "limit": {"dataType":"double"},
+            "offset": {"dataType":"double"},
+            "to": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
+            "order": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["ASC"]},{"dataType":"enum","enums":["DESC"]}]},
+        },
+        "additionalProperties": true,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "StrategyRuleType.PERCENTAGE_CHANGE": {
         "dataType": "refEnum",
         "enums": ["PERCENTAGE_CHANGE"],
@@ -103,34 +179,6 @@ const models: TsoaRoute.Models = {
             "actions": {"dataType":"array","array":{"dataType":"refAlias","ref":"StrategyAction"},"required":true},
             "taskType": {"ref":"TaskType","required":true},
             "taskSchedule": {"ref":"TaskSchedule","required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "HttpStatusCode": {
-        "dataType": "refEnum",
-        "enums": [400,500,404],
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CustomErrorType": {
-        "dataType": "refEnum",
-        "enums": [0,1,2],
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Record_string.unknown_": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"},"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ApplicationError": {
-        "dataType": "refObject",
-        "properties": {
-            "name": {"dataType":"string","required":true},
-            "message": {"dataType":"string","required":true},
-            "stack": {"dataType":"string"},
-            "statusCode": {"ref":"HttpStatusCode"},
-            "type": {"ref":"CustomErrorType","required":true},
-            "details": {"dataType":"union","subSchemas":[{"ref":"Record_string.unknown_"},{"dataType":"string"},{"dataType":"double"},{"dataType":"array","array":{"dataType":"string"}},{"dataType":"array","array":{"dataType":"double"}}]},
         },
         "additionalProperties": true,
     },
@@ -259,54 +307,6 @@ const models: TsoaRoute.Models = {
         "additionalProperties": true,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "TaskStatus": {
-        "dataType": "refEnum",
-        "enums": ["PENDING","RUNNING","COMPLETED","STOPPED"],
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "TasksDto": {
-        "dataType": "refObject",
-        "properties": {
-            "id": {"dataType":"double","required":true},
-            "strategyId": {"dataType":"double","required":true},
-            "createdAt": {"dataType":"string","required":true},
-            "updatedAt": {"dataType":"string","required":true},
-            "startedAt": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"undefined"}],"required":true},
-            "endedAt": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"undefined"}],"required":true},
-            "lastSignalAt": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"undefined"}]},
-            "status": {"ref":"TaskStatus","required":true},
-            "isActive": {"dataType":"boolean","required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "CreateTaskOptions": {
-        "dataType": "refObject",
-        "properties": {
-            "strategyId": {"dataType":"double","required":true},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "SearchTasksOptions": {
-        "dataType": "refObject",
-        "properties": {
-            "ids": {"dataType":"array","array":{"dataType":"double"}},
-            "strategyIds": {"dataType":"array","array":{"dataType":"double"}},
-            "startedAtFrom": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},
-            "endedAtFrom": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},
-            "lastSignalAtFrom": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"datetime"}]},
-            "statuses": {"dataType":"array","array":{"dataType":"refEnum","ref":"TaskStatus"}},
-            "isActive": {"dataType":"boolean"},
-            "from": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
-            "limit": {"dataType":"double"},
-            "offset": {"dataType":"double"},
-            "to": {"dataType":"union","subSchemas":[{"dataType":"datetime"},{"dataType":"string"}]},
-            "order": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["ASC"]},{"dataType":"enum","enums":["DESC"]}]},
-        },
-        "additionalProperties": true,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {"noImplicitAdditionalProperties":"ignore","bodyCoercion":true});
 
@@ -324,6 +324,246 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        const argsTasksController_createTask: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"CreateTaskOptions"},
+        };
+        app.post('/tasks',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.createTask)),
+
+            async function TasksController_createTask(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_createTask, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'createTask',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 201,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTasksController_getTaskById: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.get('/tasks/:id',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.getTaskById)),
+
+            async function TasksController_getTaskById(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_getTaskById, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'getTaskById',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTasksController_searchTasks: Record<string, TsoaRoute.ParameterSchema> = {
+                queryParams: {"in":"queries","name":"queryParams","required":true,"ref":"SearchTasksOptions"},
+        };
+        app.get('/tasks',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.searchTasks)),
+
+            async function TasksController_searchTasks(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_searchTasks, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'searchTasks',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTasksController_deleteTaskById: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.delete('/tasks/:id',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.deleteTaskById)),
+
+            async function TasksController_deleteTaskById(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_deleteTaskById, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteTaskById',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 204,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTasksController_logTaskSignal: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.post('/tasks/:id/log',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.logTaskSignal)),
+
+            async function TasksController_logTaskSignal(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_logTaskSignal, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'logTaskSignal',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTasksController_runTaskById: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.post('/tasks/:id/run',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.runTaskById)),
+
+            async function TasksController_runTaskById(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_runTaskById, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'runTaskById',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTasksController_completeTaskById: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.post('/tasks/:id/complete',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.completeTaskById)),
+
+            async function TasksController_completeTaskById(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_completeTaskById, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'completeTaskById',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsTasksController_stopTaskById: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.post('/tasks/:id/stop',
+            ...(fetchMiddlewares<RequestHandler>(TasksController)),
+            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.stopTaskById)),
+
+            async function TasksController_stopTaskById(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_stopTaskById, request, response });
+
+                const controller = new TasksController();
+
+              await templateService.apiHandler({
+                methodName: 'stopTaskById',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsStrategiesController_createStrategy: Record<string, TsoaRoute.ParameterSchema> = {
                 body: {"in":"body","name":"body","required":true,"ref":"CreateStrategyOptions"},
         };
@@ -764,246 +1004,6 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'updateMarketById',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 200,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_createTask: Record<string, TsoaRoute.ParameterSchema> = {
-                body: {"in":"body","name":"body","required":true,"ref":"CreateTaskOptions"},
-        };
-        app.post('/tasks',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.createTask)),
-
-            async function TasksController_createTask(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_createTask, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'createTask',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 201,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_getTaskById: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
-        };
-        app.get('/tasks/:id',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.getTaskById)),
-
-            async function TasksController_getTaskById(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_getTaskById, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'getTaskById',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 200,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_searchTasks: Record<string, TsoaRoute.ParameterSchema> = {
-                queryParams: {"in":"queries","name":"queryParams","required":true,"ref":"SearchTasksOptions"},
-        };
-        app.get('/tasks',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.searchTasks)),
-
-            async function TasksController_searchTasks(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_searchTasks, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'searchTasks',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 200,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_deleteTaskById: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
-        };
-        app.delete('/tasks/:id',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.deleteTaskById)),
-
-            async function TasksController_deleteTaskById(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_deleteTaskById, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'deleteTaskById',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 204,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_logTaskSignal: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
-        };
-        app.post('/tasks/:id/log',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.logTaskSignal)),
-
-            async function TasksController_logTaskSignal(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_logTaskSignal, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'logTaskSignal',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 200,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_runTaskById: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
-        };
-        app.post('/tasks/:id/run',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.runTaskById)),
-
-            async function TasksController_runTaskById(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_runTaskById, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'runTaskById',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 200,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_completeTaskById: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
-        };
-        app.post('/tasks/:id/complete',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.completeTaskById)),
-
-            async function TasksController_completeTaskById(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_completeTaskById, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'completeTaskById',
-                controller,
-                response,
-                next,
-                validatedArgs,
-                successStatus: 200,
-              });
-            } catch (err) {
-                return next(err);
-            }
-        });
-        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsTasksController_stopTaskById: Record<string, TsoaRoute.ParameterSchema> = {
-                id: {"in":"path","name":"id","required":true,"dataType":"double"},
-        };
-        app.post('/tasks/:id/stop',
-            ...(fetchMiddlewares<RequestHandler>(TasksController)),
-            ...(fetchMiddlewares<RequestHandler>(TasksController.prototype.stopTaskById)),
-
-            async function TasksController_stopTaskById(request: ExRequest, response: ExResponse, next: any) {
-
-            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-            let validatedArgs: any[] = [];
-            try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsTasksController_stopTaskById, request, response });
-
-                const controller = new TasksController();
-
-              await templateService.apiHandler({
-                methodName: 'stopTaskById',
                 controller,
                 response,
                 next,

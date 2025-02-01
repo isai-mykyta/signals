@@ -1,7 +1,7 @@
 import { Strategy } from "../types";
 import { EventsProducer } from "./eventsProducer";
 
-export class StrategiesProducer extends EventsProducer {
+class StrategiesProducer extends EventsProducer {
   public createStrategyQueue = process.env.CREATE_STRATEGY_QUEUE;
 
   constructor () {
@@ -19,5 +19,8 @@ export class StrategiesProducer extends EventsProducer {
     }
 
     this.sendMessage(strategy);
+    console.log(`RMQ message is sent to ${this.createStrategyQueue}`, strategy);
   }
 }
+
+export const strategiesProducer = new StrategiesProducer();

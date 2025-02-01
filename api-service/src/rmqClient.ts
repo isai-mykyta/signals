@@ -1,14 +1,16 @@
 import amqp from "amqplib";
 
+import { rmqConfig } from "./configs";
 import { RmqClientOptions } from "./types";
 
-export class RmqClient {
+class RmqClient {
   public readonly rmqUrl: string;
-  public connection: amqp.Connection;
-  public isConnected: boolean;
+  public connection: amqp.Connection | null = null;
+  public isConnected: boolean = false;
 
   constructor (options: RmqClientOptions) {
     this.rmqUrl = this.buildRmqUrl(options);
+    this.connect();
   }
 
   private handleConnectionError(error: unknown): void {
@@ -37,8 +39,14 @@ export class RmqClient {
   }
 
   public async close(): Promise<void> {
-    await this.connection.close();
-    this.isConnected = false;
-    console.log(`RMQ connection closed gracefully`);
+    if (this.connection) {
+      await this.connection.close();
+      this.isConnected = false;
+      console.log(`RMQ connection closed gracefully`);
+    }
   }
 }
+
+const rmqClient = new RmqClient(rmqConfig);
+
+export { rmqClient };

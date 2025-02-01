@@ -1,13 +1,13 @@
 import amqp from "amqplib";
 
-import { rmqClient } from "../app";
+import { rmqClient } from "../rmqClient";
 import { EventsProducerOptions } from "../types";
 
 export abstract class EventsProducer {
-  public isConnected: boolean;
+  public isConnected: boolean = false;
   public readonly name: string;
   protected connection: amqp.Connection;
-  protected channel: amqp.Channel;
+  protected channel: amqp.Channel | null = null;
 
   constructor (options: EventsProducerOptions) {
     this.connection = rmqClient.connection;
@@ -24,6 +24,7 @@ export abstract class EventsProducer {
   }
 
   public async connect(): Promise<void> {
+    this.connection = rmqClient.connection;
     this.channel = await this.connection.createChannel();
     
     this.channel.on("error", this.handleChannelError);
@@ -34,9 +35,11 @@ export abstract class EventsProducer {
   }
 
   public async close(): Promise<void> {
-    await this.channel.close();
-    this.isConnected = false;
-    console.log(`${this.name} channel closed gracefully`);
+    if (this.channel) {
+      await this.channel.close();
+      this.isConnected = false;
+      console.log(`${this.name} channel closed gracefully`);
+    }
   }
 
   public sendMessage<Message>(message: Message, options: amqp.Options.Publish = {}): void {
