@@ -57,7 +57,7 @@ fi
 
 
 echo "Starting RabbitMQ..."
-docker-compose -f docker-compose.yml up -d rmq
+docker-compose -f docker-compose.rmq.yml up -d rmq
 
 echo "Waiting for RabbitMQ to become healthy..."
 

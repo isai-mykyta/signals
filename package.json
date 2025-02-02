@@ -6,9 +6,8 @@
   ],
   "private": true,
   "scripts": {
-    "db:up": "yarn workspace api-service db:up",
-    "db:down": "yarn workspace api-service db:down",
-    "db:restart": "yarn workspace api-service db:restart",
+    "db:up": "docker-compose -f docker-compose.pg.yml --env-file .env up -d",
+    "db:down": "docker-compose -f docker-compose.pg.yml down",
     "db:migrate": "yarn workspace api-service migrate",
     "db:migrate:undo": "yarn workspace api-service migrate:undo",
     "db:migration:create": "yarn workspace api-service migration:create",
@@ -23,9 +22,8 @@
     "engine:start:prod": "yarn workspace tasks-engine start:prod",
     "engine:build": "yarn workspace tasks-engine build",
     "engine:test": "yarn workspace tasks-engine test",
-    "mongodb:up": "yarn workspace tasks-engine mongodb:up",
-    "mongodb:down": "yarn workspace tasks-engine mongodb:down",
-    "mongodb:restart": "yarn workspace tasks-engine mongodb:restart",
+    "mongodb:up": "docker-compose -f docker-compose.mng.yml --env-file .env up -d",
+    "mongodb:down": "docker-compose -f docker-compose.mng.yml down",
     "start-all:dev": "bash ./start-all.sh",
     "start-all:prod": "bash ./start-all.sh prod"
   },
