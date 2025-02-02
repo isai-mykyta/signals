@@ -29,6 +29,33 @@ fi
 echo "Running migrations..."
 yarn db:migrate
 
+echo "Starting MongoDB..."
+
+IS_MONGO_HEALTHY="0"
+MONGO_RETRY_COUNT=0
+MAX_MONGO_RETRIES=10
+
+echo "Waiting for MongoDB to become healthy..."
+yarn mongodb:up
+
+while [ "$IS_MONGO_HEALTHY" -ne 1 ] && [ "$MONGO_RETRY_COUNT" -lt "$MAX_MONGO_RETRIES" ]; do
+  MONGO_STATUS=$(docker inspect --format='{{.State.Health.Status}}' signals_mongodb 2>/dev/null)
+  if [ "$MONGO_STATUS" == "healthy" ]; then
+    IS_MONGO_HEALTHY=1
+    echo "MongoDB is healthy!"
+  else
+    echo "MongoDB not ready yet... ($MONGO_RETRY_COUNT/$MAX_MONGO_RETRIES)"
+    ((MONGO_RETRY_COUNT++))
+    sleep 5
+  fi
+done
+
+if [ "$IS_MONGO_HEALTHY" -ne 1 ]; then
+  echo "MongoDB did not become healthy in time"
+  exit 1
+fi
+
+
 echo "Starting RabbitMQ..."
 # Start only the RabbitMQ service defined in your docker-compose.yml
 docker-compose -f docker-compose.yml up -d rmq

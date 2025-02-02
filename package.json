@@ -23,6 +23,9 @@
     "engine:start:prod": "yarn workspace tasks-engine start:prod",
     "engine:build": "yarn workspace tasks-engine build",
     "engine:test": "yarn workspace tasks-engine test",
+    "mongodb:up": "yarn workspace tasks-engine mongodb:up",
+    "mongodb:down": "yarn workspace tasks-engine mongodb:down",
+    "mongodb:restart": "yarn workspace tasks-engine mongodb:restart",
     "start-all:dev": "bash ./start-all.sh",
     "start-all:prod": "bash ./start-all.sh prod"
   },

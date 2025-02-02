@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: signals_mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_DATABASE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodbdata:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --username ${MONGO_DB_ROOT_USERNAME} --password ${MONGO_DB_ROOT_PASSWORD} --authenticationDatabase admin --eval 'db.runCommand({ ping: 1 })'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongodbdata:

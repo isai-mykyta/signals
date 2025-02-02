@@ -26,7 +26,10 @@
     "start:dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
     "start:prod": "tsc && node dist/server.js",
-    "test": "jest --verbose --silent"
+    "test": "jest --verbose --silent",
+    "mongodb:up": "docker-compose --env-file .env up -d",
+    "mongodb:down": "docker-compose down",
+    "mongodb:restart": "npm run db:down && npm run db:up"
   },
   "keywords": [],
   "author": "",
