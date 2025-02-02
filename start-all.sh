@@ -57,7 +57,6 @@ fi
 
 
 echo "Starting RabbitMQ..."
-# Start only the RabbitMQ service defined in your docker-compose.yml
 docker-compose -f docker-compose.yml up -d rmq
 
 echo "Waiting for RabbitMQ to become healthy..."
