@@ -1,9 +1,8 @@
 import amqp from "amqplib";
 
-import { rmqConfig } from "./configs";
 import { RmqClientOptions } from "./types";
 
-class RmqClient {
+export class RmqClient {
   public readonly rmqUrl: string;
   public connection: amqp.Connection | null = null;
   public isConnected: boolean = false;
@@ -46,8 +45,3 @@ class RmqClient {
     }
   }
 }
-
-const rmqClient = new RmqClient(rmqConfig);
-
-export { rmqClient };
-

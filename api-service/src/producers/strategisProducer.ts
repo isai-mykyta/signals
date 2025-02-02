@@ -1,3 +1,4 @@
+import { rmqClient } from "../server";
 import { Strategy } from "../types";
 import { EventsProducer } from "./eventsProducer";
 
@@ -9,7 +10,7 @@ class StrategiesProducer extends EventsProducer {
   }
 
   public async connectChannel(): Promise<void> {
-    await this.connect();
+    await this.connect(rmqClient);
     await this.channel.assertQueue(this.createStrategyQueue, { durable: true });
   }
 

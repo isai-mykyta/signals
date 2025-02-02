@@ -18,7 +18,7 @@ export class StrategiesService {
     }
 
     const strategy = await this.strategiesRepository.createStrategy(options);
-    await strategiesProducer.sendCreationMessage(strategy);
+    strategiesProducer.sendCreationMessage(strategy);
     return strategy;
   }
 

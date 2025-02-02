@@ -1,15 +1,12 @@
 import amqp from "amqplib";
 
-import { rmqClient } from "../rmqClient";
+import { RmqClient } from "../rmqClient";
 
 export abstract class EventsProducer {
   public isConnected: boolean = false;
-  protected connection: amqp.Connection;
   protected channel: amqp.Channel | null = null;
 
-  constructor () {
-    this.connection = rmqClient.connection;
-  }
+  constructor () {}
 
   protected handleChannelError(error: unknown): void {
     console.error(`RMQ channel error:`, error);
@@ -20,9 +17,8 @@ export abstract class EventsProducer {
     this.isConnected = false;
   }
 
-  public async connect(): Promise<void> {
-    this.connection = rmqClient.connection;
-    this.channel = await this.connection.createChannel();
+  public async connect(rmqClient: RmqClient): Promise<void> {
+    this.channel = await rmqClient.connection.createChannel();
     
     this.channel.on("error", this.handleChannelError.bind(this));
     this.channel.on("close", this.handleChannelClose.bind(this));
