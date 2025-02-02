@@ -9,7 +9,7 @@ export class ApiService {
     return Array.isArray(value) ? `["${value.join("\",\"")}"]` : value;
   }
 
-  async call<Params, Data, Response>(options: CallApiServiceOptions<Params, Data>): Promise<Response> {
+  async call<Response, Data = unknown, Params = unknown>(options: CallApiServiceOptions<Params, Data>): Promise<Response> {
     const stringifiedParams = Object.entries(options.params || {})
       .reduce<Record<string, unknown>>((acc, [key, value]) => {
         acc[key] = this.stringifyData(value);

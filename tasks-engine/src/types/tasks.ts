@@ -16,3 +16,7 @@ export interface Task {
   status: TaskStatus;
   isActive: boolean;
 }
+
+export interface CreateTaskOptions {
+  strategyId: number;
+}
