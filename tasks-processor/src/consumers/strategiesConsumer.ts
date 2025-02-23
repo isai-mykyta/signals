@@ -24,6 +24,7 @@ export class StrategiesConsumer extends EventsConsumer {
       if (message) {
         const messageString = message.content.toString("utf-8");
         const messagePayload = JSON.parse(messageString);
+        console.log(messagePayload);
         
         this.strategiesService.processStrategy(messagePayload);
         this.channel.ack(message);

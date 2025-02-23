@@ -29,32 +29,31 @@ fi
 echo "Running migrations..."
 yarn db:migrate
 
-echo "Starting MongoDB..."
+echo "Starting Redis..."
+docker-compose -f docker-compose.rds.yml up -d redis
 
-IS_MONGO_HEALTHY="0"
-MONGO_RETRY_COUNT=0
-MAX_MONGO_RETRIES=10
+echo "Waiting for Redis to become healthy..."
 
-echo "Waiting for MongoDB to become healthy..."
-yarn mongodb:up
+IS_REDIS_HEALTHY="0"
+REDIS_RETRY_COUNT=0
+MAX_REDIS_RETRIES=10
 
-while [ "$IS_MONGO_HEALTHY" -ne 1 ] && [ "$MONGO_RETRY_COUNT" -lt "$MAX_MONGO_RETRIES" ]; do
-  MONGO_STATUS=$(docker inspect --format='{{.State.Health.Status}}' signals_mongodb 2>/dev/null)
-  if [ "$MONGO_STATUS" == "healthy" ]; then
-    IS_MONGO_HEALTHY=1
-    echo "MongoDB is healthy!"
+while [ "$IS_REDIS_HEALTHY" -ne 1 ] && [ "$REDIS_RETRY_COUNT" -lt "$MAX_REDIS_RETRIES" ]; do
+  REDIS_STATUS=$(docker inspect --format='{{.State.Health.Status}}' signals_redis 2>/dev/null)
+  if [ "$REDIS_STATUS" == "healthy" ]; then
+    IS_REDIS_HEALTHY=1
+    echo "Redis is healthy!"
   else
-    echo "MongoDB not ready yet... ($MONGO_RETRY_COUNT/$MAX_MONGO_RETRIES)"
-    ((MONGO_RETRY_COUNT++))
+    echo "Redis not ready yet... ($REDIS_RETRY_COUNT/$MAX_REDIS_RETRIES)"
+    ((REDIS_RETRY_COUNT++))
     sleep 5
   fi
 done
 
-if [ "$IS_MONGO_HEALTHY" -ne 1 ]; then
-  echo "MongoDB did not become healthy in time"
+if [ "$IS_REDIS_HEALTHY" -ne 1 ]; then
+  echo "Redis did not become healthy in time"
   exit 1
 fi
-
 
 echo "Starting RabbitMQ..."
 docker-compose -f docker-compose.rmq.yml up -d rmq
@@ -84,8 +83,8 @@ fi
 
 if [ "$1" == "prod" ]; then
   echo "Starting services in production mode..."
-  yarn concurrently "yarn api:start:prod" "yarn engine:start:prod"
+  yarn concurrently "yarn api:start:prod" "yarn processor:start:prod"
 else
   echo "Starting services in dev/watch mode..."
-  yarn concurrently "yarn api:start:dev" "yarn engine:start:dev"
+  yarn concurrently "yarn api:start:dev" "yarn processor:start:dev"
 fi

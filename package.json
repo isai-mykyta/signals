@@ -22,8 +22,6 @@
     "processor:start:prod": "yarn workspace tasks-processor start:prod",
     "processor:build": "yarn workspace tasks-processor build",
     "processor:test": "yarn workspace tasks-processor test",
-    "mongodb:up": "docker-compose -f docker-compose.mng.yml --env-file .env up -d",
-    "mongodb:down": "docker-compose -f docker-compose.mng.yml down",
     "start-all:dev": "bash ./start-all.sh",
     "start-all:prod": "bash ./start-all.sh prod"
   },

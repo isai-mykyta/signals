@@ -20,7 +20,6 @@ class StrategiesProducer extends EventsProducer {
     }
 
     this.sendMessage(this.createStrategyQueue, strategy);
-    console.log(`RMQ message is sent to ${this.createStrategyQueue}`, strategy);
   }
 }
 
