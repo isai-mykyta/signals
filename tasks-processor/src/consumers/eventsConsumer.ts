@@ -1,4 +1,4 @@
-import amqp from "amqplib";
+import amqp, { ConsumeMessage } from "amqplib";
 
 import { RmqClient } from "../rmqClient";
 
@@ -10,6 +10,12 @@ export abstract class EventsConsumer {
 
   protected handleChannelError(error: unknown): void {
     console.error(`RMQ channel error:`, error);
+  }
+
+  protected parseConsumeMessage<Payload>(message: ConsumeMessage): Payload {
+    const messageString = message.content.toString("utf-8");
+    const messagePayload = JSON.parse(messageString);
+    return messagePayload;
   }
 
   protected handleChannelClose(): void {

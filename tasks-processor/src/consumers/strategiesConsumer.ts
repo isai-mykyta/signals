@@ -1,6 +1,7 @@
 import { rmqClient } from "../server";
 import { StrategiesService } from "../services";
 import { EventsConsumer } from "./eventsConsumer";
+import { Strategy } from "../types";
 
 export class StrategiesConsumer extends EventsConsumer {
   public createStrategyQueue = process.env.CREATE_STRATEGY_QUEUE;
@@ -16,16 +17,11 @@ export class StrategiesConsumer extends EventsConsumer {
   }
 
   async consumeCreationMessages(): Promise<void> {
-    if (!this.isConnected) {
-      await this.connectChannel();
-    }
+    if (!this.isConnected) await this.connectChannel();
 
     this.channel.consume(this.createStrategyQueue, (message) => {
       if (message) {
-        const messageString = message.content.toString("utf-8");
-        const messagePayload = JSON.parse(messageString);
-        console.log(messagePayload);
-        
+        const messagePayload = this.parseConsumeMessage<Strategy>(message);
         this.strategiesService.processStrategy(messagePayload);
         this.channel.ack(message);
       }

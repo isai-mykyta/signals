@@ -1,3 +1,4 @@
+import { tasksQueue } from "../server";
 import { Strategy } from "../types";
 import { TasksService } from "./tasks";
 
@@ -8,7 +9,8 @@ export class StrategiesService {
     if (!strategy.isActive) {
       return;
     }
-
+    
     const task = await this.tasksService.createTask({ strategyId: strategy.id });
+    await tasksQueue.upsertTasksJobScheduler(task);
   }
 }

@@ -35,9 +35,11 @@
   "dependencies": {
     "amqplib": "^0.10.5",
     "axios": "^1.7.9",
+    "bullmq": "^5.41.5",
     "dotenv": "^16.4.6",
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
+    "ioredis": "^5.5.0",
     "reflect-metadata": "^0.2.2"
   }
 }

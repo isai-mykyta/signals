@@ -4,7 +4,9 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import { app } from "./app";
-import { rmqConfig } from "./configs";
+import { TasksQueue } from "./bullmq/queues";
+import { TasksWorker } from "./bullmq/workers";
+import { redisConfig, rmqConfig } from "./configs";
 import { StrategiesConsumer } from "./consumers";
 import { RmqClient } from "./rmqClient";
 
@@ -12,6 +14,8 @@ const HTTP_PORT = process.env.HTTP_PORT || 8081;
 
 const rmqClient = new RmqClient(rmqConfig);
 const strategiesConsumer = new StrategiesConsumer();
+const tasksQueue = new TasksQueue({ redisConnection: redisConfig });
+const tasksWorker = new TasksWorker({ redisConnection: redisConfig });
 
 const start = async () => {
   await rmqClient.connect();
@@ -28,6 +32,7 @@ const stop = async () => {
       await rmqClient.close();
     }
 
+    await tasksQueue.closeConnection();
     process.exit(0);
   } catch (error) {
     console.error("Error during shutdown:", error);
@@ -40,5 +45,10 @@ process.on("SIGINT", stop);
 
 start();
 
-export { rmqClient };
+export { 
+  rmqClient, 
+  strategiesConsumer, 
+  tasksQueue,
+  tasksWorker
+};
 
